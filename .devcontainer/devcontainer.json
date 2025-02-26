@@ -1,0 +1,13 @@
+{
+  "dockerFile": "./Dockerfile",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "james-yu.latex-workshop",
+        "shardulm94.trailing-spaces",
+        "stkb.rewrap",
+        "vscode-icons-team.vscode-icons"
+      ]
+    }
+  }
+}
