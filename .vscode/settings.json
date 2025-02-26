@@ -1,0 +1,19 @@
+{
+    "files.eol": "\n",
+    "latex-workshop.linting.chktex.enabled": true,
+    "latex-workshop.linting.chktex.exec.path": "chktex",
+    "latex-workshop.latex.clean.subfolder.enabled": true,
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.tex": "latex"
+    },
+    "latex-workshop.formatting.latex": "latexindent",
+    "latex-workshop.formatting.latexindent.path": "latexindent",
+    "latex-workshop.formatting.latexindent.args": [
+        "-c",
+        "%DIR%/",
+        "%TMPFILE%",
+        "-y=defaultIndent: '  '"
+    ]
+}
