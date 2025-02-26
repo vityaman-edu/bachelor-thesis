@@ -8,7 +8,7 @@
     "files.associations": {
         "*.tex": "latex"
     },
-    "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/build",
+    "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/build/tex",
     "latex-workshop.formatting.latex": "latexindent",
     "latex-workshop.formatting.latexindent.path": "latexindent",
     "latex-workshop.formatting.latexindent.args": [
