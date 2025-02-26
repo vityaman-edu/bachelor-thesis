@@ -1,0 +1,10 @@
+CmdLine {
+  -n 19
+}
+
+Silent {
+  \tableofcontents
+  \centering
+  \hline
+  \newpage
+}
