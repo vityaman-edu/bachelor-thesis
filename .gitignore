@@ -25,7 +25,8 @@
 .pdf
 
 ## Output
-*.pdf
+build/*
+!build/main.pdf
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
