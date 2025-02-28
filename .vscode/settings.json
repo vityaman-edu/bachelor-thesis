@@ -1,0 +1,6 @@
+{
+    "tinymist.formatterMode": "typstyle",
+    "tinymist.fontPaths": [
+        "/usr/local/share/fonts"
+    ]
+}
