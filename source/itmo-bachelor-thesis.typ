@@ -31,6 +31,12 @@
     #align(left)[#it]
   ]
 
+  set math.equation(
+    block: true,
+    numbering: "(1)",
+  )
+
+
   set page(
     margin: (
       top: 10cm,
