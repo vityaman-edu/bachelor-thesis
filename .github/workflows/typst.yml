@@ -15,7 +15,8 @@ jobs:
       
       - name: Install Typst
         run: |
-          wget -qO- https://github.com/typst/typst/releases/latest/download/typst-linux-x86_64.tar.xz | tar xJ
+          curl -fsSL https://github.com/typst/typst/releases/latest/download/typst-linux-x86_64 -o typst
+          chmod +x typst
           sudo mv typst /usr/local/bin/
 
       - name: Compile PDF
