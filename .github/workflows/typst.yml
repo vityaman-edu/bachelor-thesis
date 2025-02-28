@@ -28,11 +28,11 @@ jobs:
           mkdir -p build
           typst compile source/main.typ build/thesis.pdf
 
-      - name: Upload the thesis PDF as artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: thesis-pdf
           path: build/thesis.pdf
+          retention-days: 3
 
   release:
     name: Create Release
@@ -42,14 +42,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download the thesis PDF
-        uses: actions/download-artifact@v4
+      - uses: ncipollo/release-action@v1.14.0
         with:
-          name: thesis-pdf
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: build/thesis.pdf
-          generate_release_notes: true
-          tag_name: ${{ github.event.inputs.tag }}
+          artifacts: build/thesis.pdf
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
