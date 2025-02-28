@@ -1,0 +1,48 @@
+name: Typst
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    name: Compile PDF
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Typst
+        run: |
+          wget -qO- https://github.com/typst/typst/releases/latest/download/typst-linux-x86_64.tar.xz | tar xJ
+          sudo mv typst /usr/local/bin/
+
+      - name: Compile PDF
+        run: |
+          typst compile source/main.typ build/thesis.pdf
+
+      - name: Upload the thesis PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: thesis-pdf
+          path: build/thesis.pdf
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the thesis PDF
+        uses: actions/download-artifact@v4
+        with:
+          name: thesis-pdf
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/thesis.pdf
+          generate_release_notes: true
