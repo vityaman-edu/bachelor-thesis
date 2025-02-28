@@ -2,6 +2,10 @@ name: Typst
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag
+        required: true
 
 jobs:
   build:
@@ -48,3 +52,4 @@ jobs:
         with:
           files: build/thesis.pdf
           generate_release_notes: true
+          tag_name: ${{ github.event.inputs.tag }}
