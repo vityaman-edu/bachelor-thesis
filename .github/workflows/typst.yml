@@ -45,6 +45,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: thesis-pdf
+          path: build/thesis.pdf
 
       - name: ls
         run: ls && ls build
