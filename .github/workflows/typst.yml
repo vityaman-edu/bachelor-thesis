@@ -13,9 +13,11 @@ jobs:
       
       - name: Install Typst
         run: |
-          curl -fsSL https://github.com/typst/typst/releases/latest/download/typst-linux-x86_64 -o typst
-          chmod +x typst
-          sudo mv typst /usr/local/bin/
+          DIST=typst-x86_64-unknown-linux-musl
+          wget https://github.com/typst/typst/releases/download/v0.13.0/$DIST.tar.xz
+          tar -xf $DIST.tar.xz
+          cd $DIST
+          mv typst /usr/local/bin/
 
       - name: Compile PDF
         run: |
