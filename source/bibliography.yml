@@ -1,0 +1,29 @@
+aho-ullman-compilers:
+  type: Book
+  title: "Compilers: Principles, Techniques, and Tools"
+  author:
+    - "Aho, A. V."
+    - "Lam, M. S."
+    - "Sethi, R."
+    - "Ullman, J. D."
+  edition: "2nd ed."
+  publisher: "Addison-Wesley"
+  location: "Moscow"
+  date: 2008
+  page-total: 1184
+  electronic:
+    url: "https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811"
+    access-date: "2023-10-10"
+
+parr-antlr:
+  type: Book
+  title: "The Definitive ANTLR 4 Reference"
+  author:
+    - "Parr, T."
+  edition: "2nd ed."
+  publisher: "Pragmatic Bookshelf"
+  date: 2013
+  page-total: 328
+  electronic:
+    url: "https://pragprog.com/titles/tpantlr2/the-definitive-antlr-4-reference/"
+    access-date: "2023-10-10"

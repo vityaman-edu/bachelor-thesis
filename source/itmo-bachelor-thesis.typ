@@ -26,7 +26,6 @@
 
   show figure.where(kind: table): set figure(supplement: "Таблица")
   show figure.where(kind: table): set figure.caption(position: top)
-
   show figure.caption.where(kind: table): it => [
     #align(left)[#it]
   ]
