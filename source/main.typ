@@ -1,4 +1,4 @@
-#import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, chapter
+#import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, chapter, term
 
 #show: itmo-bachelor-thesis.with(
   title: "Реализация модуля контекcтно-зависимого автодополнения запросов на YQL",
@@ -9,36 +9,36 @@
 
 #lorem(50)
 
+#lorem(25)
+
 #heading(numbering: none, outlined: false)[Аннотация]
 
 #lorem(50)
 
+#lorem(25)
+
 #structural-element("Содержание", outlined: false)
 #outline(title: none)
 
-#structural-element("Cписок сокращений и условных обозначений")
+#structural-element("Cписок сокращений
+и условных обозначений")
 
-СУБД --- система управления базами данных
-
-YDB --- распределённая отказоустойчивая Distributed SQL СУБД
-
-YQL --- универсальный декларативный язык запросов к YDB, диалект SQL
-
-CLI --- command-line interface
+#term([СУБД], [система управления базами данных])
+#term([YDB], [распределённая отказоустойчивая Distributed SQL СУБД])
+#term([YQL], [универсальный декларативный язык запросов к YDB, диалект SQL])
+#term([CLI], [command-line interface])
 
 #structural-element("Термины и определения")
 
-Highlighting Unit --- query text substring to be highlighted.
-
-Token --- token name from the _YQL Grammar_.
-
-Rule --- production rule name from the _YQL Grammar_.
-
-YQL Grammar --- YQL formal grammar represented in ANTLR4 format, this is the single source of truth about the language syntax.
-
-Theme --- mapping from _Highlighting Unit_ to a _Color_.
-
-Color --- RGB-equivalent HEX.
+#term([Highlighting Unit], [query text substring to be highlighted])
+#term([Token], [token name from the _YQL Grammar_])
+#term([Rule], [production rule name from the _YQL Grammar_])
+#term(
+  [YQL],
+  [YQL formal grammar represented in ANTLR4 format, this is the single source of truth about the language syntax],
+)
+#term([Theme], [mapping from _Highlighting Unit_ to a _Color_])
+#term([Color], [RGB-equivalent HEX])
 
 #structural-element("Введение")
 
@@ -98,7 +98,6 @@ Color --- RGB-equivalent HEX.
 Общие принципы заданий:
 + решение должно быть собрано при помощи CMake, но по желанию студента возможно использование другой системы сборки по согласованию с преподавателем (например, Bazel, Ya Tool, …),
 + Решение должно быть реализованы на языке C++ с использованием возможностей современного стандарта (не ниже C++20).
-.
 
 #lorem(25)
 

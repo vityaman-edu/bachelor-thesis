@@ -18,7 +18,14 @@
     lang: "ru",
   )
 
-  set par(justify: true)
+  set par(
+    first-line-indent: (
+      amount: 1em,
+      all: true,
+    ),
+    justify: true,
+    spacing: 1em,
+  )
 
   set figure.caption(separator: [ --- ])
 
@@ -36,7 +43,7 @@
   )
 
   set list(marker: [---])
-  
+
   set enum(numbering: "1)")
 
 
@@ -81,6 +88,14 @@
     )[#upper(name)]
   ]
   v(1em)
+}
+
+#let term(name, definition) = {
+  par(
+    first-line-indent: (
+      amount: 0em,
+    ),
+  )[#name --- #definition]
 }
 
 #let chapter(name) = {
