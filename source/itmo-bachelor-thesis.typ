@@ -12,13 +12,24 @@
   set page(paper: "a4")
 
   set text(
-    font: "Times New Roman",
+    // font: "Times New Roman",
     size: 14pt,
     spacing: 150%,
+    lang: "ru",
   )
 
   set par(justify: true)
 
+  set figure.caption(separator: [ --- ])
+
+  show figure.where(kind: image): set figure(supplement: "Рисунок")
+
+  show figure.where(kind: table): set figure(supplement: "Таблица")
+  show figure.where(kind: table): set figure.caption(position: top)
+
+  show figure.caption.where(kind: table): it => [
+    #align(left)[#it]
+  ]
 
   set page(
     margin: (

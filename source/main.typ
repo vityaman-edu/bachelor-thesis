@@ -9,7 +9,7 @@
 
 #lorem(50)
 
-#heading(numbering: none, outlined: false)[Аннтонация]
+#heading(numbering: none, outlined: false)[Аннотация]
 
 #lorem(50)
 
@@ -36,7 +36,7 @@
 
 $ L(G) = { w in Sigma^* | S =>^* w } $
 
-где, 
+где,
 
 - $L(G)$ — язык, порождаемый грамматикой $G$.
 
@@ -46,9 +46,34 @@ $ L(G) = { w in Sigma^* | S =>^* w } $
 
 #lorem(25)
 
-== #lorem(4)
+== Обзор СУБД YDB
+
+Давайте лучше разберемся в том, как пользователь взаимодействует с YDB. @ydb-interact иллюстрирует взаимодействие пользователя с YDB через консольный клиент YDB CLI.
+
+#figure(
+  image("image/ydb.png", width: 65%),
+  caption: [Схема взаимодейтвия пользователя с YDB],
+) <ydb-interact>
 
 #lorem(25)
+
+Именно в этот момент внимательный читатель заметит, что у YQL есть фирменная тема для раскраски в редакторах кода. @yql-highlight показывает, в какой цвет окрашивается каждая единица подсветки в зависимости от используемой темы.
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    align: horizon,
+    table.header(
+      [*Единица подсветки*], 
+      [*Monaco Light*], 
+      [*Monaco Dark*],
+    ),
+    [*Keyword*], "#0000ff", "#569cd6",
+    [*Punctuation*], "#000000", "#d4d4d4",
+    [*Identifier*], "#001188", "#74b0df"
+  ),
+  caption: [Связь единиц подсветки, тем и цветов]
+) <yql-highlight>
 
 #lorem(25)
 
