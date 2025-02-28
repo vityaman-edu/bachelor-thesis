@@ -21,6 +21,7 @@ jobs:
 
       - name: Compile PDF
         run: |
+          mkdir -p build
           typst compile source/main.typ build/thesis.pdf
 
       - name: Upload the thesis PDF as artifact
