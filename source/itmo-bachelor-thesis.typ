@@ -36,6 +36,10 @@
     numbering: "(1)",
   )
 
+  set list(marker: [---])
+  
+  set enum(numbering: "1)")
+
 
   set page(
     margin: (
