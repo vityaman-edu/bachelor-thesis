@@ -1,5 +1,4 @@
-FROM qmcgaw/latexdevcontainer:latest-full
+FROM archlinux:latest
 
-RUN apt-get update && \
-    apt-get install texlive-lang-cyrillic
-    apt-get install texlive-latex-extra
+COPY devcontainer.bash /
+RUN bash /devcontainer.bash
