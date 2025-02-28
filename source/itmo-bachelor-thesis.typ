@@ -27,7 +27,7 @@
     spacing: 1em,
   )
 
-  show heading: it => {
+  show heading.where(depth: 2): it => {
     block(inset: (left: 1.25cm), it)
   }
 
