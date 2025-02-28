@@ -20,12 +20,16 @@
 
   set par(
     first-line-indent: (
-      amount: 1em,
+      amount: 1.25cm,
       all: true,
     ),
     justify: true,
     spacing: 1em,
   )
+
+  show heading: it => {
+    block(inset: (left: 1.25cm), it)
+  }
 
   set figure.caption(separator: [ --- ])
 
@@ -100,5 +104,5 @@
 
 #let chapter(name) = {
   pagebreak()
-  heading[#name]
+  align(center)[#heading[#name]]
 }
