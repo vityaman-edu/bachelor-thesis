@@ -1,0 +1,17 @@
+{
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "myriad-dreamin.tinymist",
+                "davidanson.vscode-markdownlint",
+                "yzhang.markdown-all-in-one",
+                "foxundermoon.shell-format",
+                "ms-vscode.makefile-tools"
+            ]
+        }
+    }
+}
