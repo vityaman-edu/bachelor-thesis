@@ -12,7 +12,7 @@
   set page(paper: "a4")
 
   set text(
-    // font: "Times New Roman",
+    font: "Times New Roman",
     size: 14pt,
     spacing: 150%,
     lang: "ru",
