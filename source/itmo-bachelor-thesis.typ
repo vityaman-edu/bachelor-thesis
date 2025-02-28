@@ -80,6 +80,7 @@
       outlined: outlined,
     )[#upper(name)]
   ]
+  v(1em)
 }
 
 #let chapter(name) = {
