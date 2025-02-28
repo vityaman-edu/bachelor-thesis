@@ -14,10 +14,11 @@ install_font() {
     FONT_FILE="$1"
     FONT_URL="$2"
 
-    mkdir -p "$FONT_DST"
-    wget -q -O "$FONT_DST/$FONT_FILE" "$FONT_URL"
-
-    fc-cache -fv
+    if [ ! -f "$FONT_DST/$FONT_FILE" ]; then
+        mkdir -p "$FONT_DST"
+        wget -q -O "$FONT_DST/$FONT_FILE" "$FONT_URL"
+        fc-cache -fv
+    fi
 }
 
 mkdir -p /devcontainer
@@ -37,7 +38,8 @@ if [ ! -d /devcontainer/yay ]; then
 fi
 
 for pkg in "${PKGS[@]}"; do
-  yay --noconfirm -Sy $pkg
+    yay --noconfirm -Sy $pkg
 done
 
 install_font "Times New Roman.ttf" https://github.com/justrajdeep/fonts/raw/refs/heads/master/Times%20New%20Roman.ttf
+install_font "Times New Roman Bold.ttf" https://github.com/justrajdeep/fonts/blob/master/Times%20New%20Roman%20Bold.ttf

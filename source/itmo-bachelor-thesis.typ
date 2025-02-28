@@ -47,10 +47,22 @@
 
   counter(page).update(2)
 
+  set heading(numbering: "1.1")
+
   doc
 }
 
-#let structural-element(text) = {
+#let structural-element(name, outlined: true) = {
   pagebreak()
-  align(center)[#heading[#text]]
+  align(center)[
+    #heading(
+      numbering: none,
+      outlined: outlined,
+    )[#upper(name)]
+  ]
+}
+
+#let chapter(name) = {
+  pagebreak()
+  heading[#name]
 }
