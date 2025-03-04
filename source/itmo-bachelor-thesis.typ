@@ -58,7 +58,7 @@
   )
 
   align(center)[
-    #text(24pt, weight: "bold")[#title]
+    #heading(outlined: false)[#title]
     #v(1cm)
     #author
   ]

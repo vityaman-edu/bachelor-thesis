@@ -1,7 +1,8 @@
 #import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, chapter, term
 
 #show: itmo-bachelor-thesis.with(
-  title: "Реализация модуля контекcтно-зависимого автодополнения запросов на YQL",
+  title: "Реализация модуля контекcтно-зависимого 
+  автодополнения запросов на YQL",
   author: "Смирнов Виктор Игоревич",
 )
 
