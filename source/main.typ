@@ -1,9 +1,14 @@
 #import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, chapter, term
 
 #show: itmo-bachelor-thesis.with(
+  faculty: "Факультет программной инженерии и компьютерной техники",
+  program: "Системное и прикладное программное обеспечение",
+  specialty: "Программно-информационные системы",
   title: "Реализация модуля контекcтно-зависимого 
   автодополнения запросов на YQL",
   author: "Смирнов Виктор Игоревич",
+  mentor: "Осипов Святослав Владимирович",
+  year: 2025,
 )
 
 #heading(numbering: none, outlined: false)[Задание]

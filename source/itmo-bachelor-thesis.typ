@@ -1,6 +1,11 @@
 #let itmo-bachelor-thesis(
+  faculty: str,
+  program: str,
+  specialty: str,
   title: str,
   author: str,
+  mentor: str,
+  year: int,
   doc,
 ) = {
   set document(
@@ -51,17 +56,21 @@
   set enum(numbering: "1)")
 
 
-  set page(
-    margin: (
-      top: 10cm,
-    ),
-  )
-
   align(center)[
-    #heading(outlined: false)[#title]
-    #v(1cm)
-    #author
+    Университет ИТМО \
+    #faculty \
+    \ \
+    #program \
+    #specialty \
+    \ \ \ \ \ \
+    #heading(outlined: false)[#title] \
+    \ \ \ \
+    Автор: #author \
+    Руководитель: #mentor \
+    \
   ]
+
+  align(center + bottom)[Санкт-Петербург, #year]
 
   pagebreak()
 
