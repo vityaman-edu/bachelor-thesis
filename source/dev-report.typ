@@ -20,12 +20,11 @@
   year: 2025,
 )
 
-#structural-element("Содержание", outlined: false)
-#outline(title: none)
+#outline()
 
-#structural-element("Cписок сокращений и 
-условных обозначений")
+= Cписок сокращений и условных обозначений
 
+#term([БД], [база данных])
 #term([СУБД], [система управления базами данных])
 #term([YDB], [распределённая отказоустойчивая Distributed SQL СУБД])
 #term([SQL], [декларативный язык программирования для получения, создания, модификации
@@ -35,18 +34,22 @@
 #term([ANTLR], [генератор парсеров по грамматике])
 #term([GitHub], [веб-сервис для хостинга IT-проектов и их совместной разработки])
 
-#structural-element("Характеристика организации")
+= Характеристика организации
 
 Основным видом деятельности общества с ограниченной ответственностью "Специальные Средства Программирования" являются научные исследования и разработки в области естественных и технических наук.
 
-#structural-element("Введение")
+= Введение
 
 Целью практики по теме "Разработка модуля контекстно-зависимого автодополнения запросов на YQL" является повышение качества автодополнения запросов на YQL в YDB CLI. 
 
 Изначально автодополнение в данном клиентском приложении практически отсутствовало. 
 Необходимо было сперва подготовить индивидуальное задание на практику, собрать и проанализировать требования к будущему решению, поставить задачу, выбрать подходящие технологии для реализации, разобраться в процессе разработки (сборка проекта, интеграция с другими модулями, наладить взаимодействие со смежными командами), а далее инкременатально решать поставленную задачу.
 
-#chapter("Сбор и анализ требований")
+Вообще говоря, автодополнение кода является очень важным элементом любого приложения, предназначенного для ввода некоторого структурированного текста. 
+Для реализации автодополнения необходимы знания формальных грамматик, синтаксического анализа текста, семантики языков программирования. 
+Задача автодополнения запросов на SQL усложняется также тем, что требуется взаимодействовать с удаленным сервером для получения имен объектов БД, в то время как код классических языков программирования доступен локально и все данные можно получить из кодовой базы.
+
+= Сбор и анализ требований
 
 Первый этап разработки включал в себя сбор и анализ требований к модулю автодополнения YQL и их представление в текстовом виде. 
 Критерием выполнения являлось создание задач в сервисе GitHub в проектах YDB и YQL и описание требований в комментариях.
@@ -83,7 +86,7 @@
 Приведенные выше требования были описаны в комментариях к задачам.
 Как только требования были согласованы, можно было продолжить работу в заданном направлении.
 
-#chapter("Реализация автодополнения ключевых слов")
+= Реализация автодополнения ключевых слов
 
 Данный этап включает в себя реализацию автодополнения ключевых слов в модуле автодополнения YQL и интеграция модуля в приложение YDB CLI.
 Критерием выполнения данного этапа является создание модуля автодопонения YQL, реализованный алгоритм возвращающий ключевые слова в качестве кандидатов на автодополнение, автодополнение ключевых слов в YDB CLI в интерактивном режиме.
@@ -202,8 +205,7 @@
 
 Весь код доступен для чтения в репозитории проекта YDB на GitHub.
 
-#chapter("Проектирование интерфейса 
-источника имен объектов БД")
+= Проектирование интерфейса источника \ имен объектов БД
 
 Автодополнение ключевых слов уже заметно повысило пользовательский опыт разработки запросов на YQL в YDB CLI, но этого не достаточно для удобной работы.
 В любой удобной IDE реализованы подсказки также и имен различных сущностей, что очень ценят программисты, так как имена могут быть длинные, из-за чего их долго набирать, причем высок риск появления опечаток, а еще такие имена часто забываются.
@@ -264,7 +266,7 @@
 
 Весь код доступен для чтения в репозитории проекта YDB на GitHub.
 
-#chapter("Реализация автодополнения имен объектов БД")
+= Реализация автодополнения имен объектов БД
 
 В рамках данного этапа необходимо было подготовить пригодную для использования в YDB CLI реализацию сервиса имен, а также добавить элементы семантического анализа для определения типа имен и их последующей выдачи в списке кандидатов.
 
@@ -390,14 +392,202 @@
   ```
 ], caption: [Обработка имени функции])
 
-#structural-element("Заключение")
+= Заключение
 
+В заключение хочу сказать, что данный проект еще не готов полностью. 
+Далее необходимо будет поддержать автодополнение имен таблиц, колонок, индексов, директорий.
+Во первых, это требует взаимодействие с сервером СУБД. 
+Во-вторых, это требует реализации более сложных алгоритмов семантического анализа. 
+Я продолжу этим заниматься и после производственной практики, пока все не будет готово.
 
+Кроме того, в рамках производственной практики были выполнены и другие задачи, связанные с подсветкой синтаксиса YQL.
+Они не отражены в отчете, так как не соответствуют индивидуальному заданию на практику.
 
-#structural-element("Cписок использованных источников")
+В процессе работы были выявлены некоторые недостатки библиотеки antlr4-c3. 
+Например, невозможность получение parser call stack для ключевых слов, а также отсутствие генерации более длинных последовательстей лексем, даже если продолжение не является однозначным.
+
+Также я столкнулся с проблемой поддержки обратной совместимости библиотек. 
+Дело в том, что измения в исходный код YDB CLI требовалось вносить через репозиторий проекта YDB, а в YQL, где располагался модуль автодополнения, через репозиторий проекта YTsaurus. 
+Из-за этого было невозможным атомарное изменение исходных кодов и YDB CLI, и YQL.
+Этот пример иллюстрирует преимущества разработки в монорепозитории.
+
+Также хочу отметить полезность периодических встреч с руководителем. 
+Во-первых, это мотивировало делать прогресс по задачам, чтобы продуктивно проводить встречи. 
+Во-вторых, после встреч повышалась мотивация что-то делать, когда делать что либо не очень хотелось. 
+Мне показалось это очень хорошим приемом для совместной разработки.
+
+= Cписок использованных источников
 
 #bibliography(
   "bibliography.yml",
   title: none,
   full: true,
 )
+
+= Приложение
+
+```cpp
+#include "sql_complete.h"
+
+#include <yql/essentials/sql/v1/complete/text/word.h>
+#include <yql/essentials/sql/v1/complete/name/static/name_service.h>
+#include <yql/essentials/sql/v1/complete/syntax/local.h>
+#include <yql/essentials/sql/v1/complete/syntax/format.h>
+
+#include <util/generic/algorithm.h>
+#include <util/charset/utf8.h>
+
+namespace NSQLComplete {
+
+  class TSqlCompletionEngine: public ISqlCompletionEngine {
+  public:
+    explicit TSqlCompletionEngine(
+      TLexerSupplier lexer,
+      INameService::TPtr names,
+      ISqlCompletionEngine::TConfiguration configuration)
+      : Configuration(std::move(configuration))
+      , SyntaxAnalysis(MakeLocalSyntaxAnalysis(lexer))
+      , Names(std::move(names))
+    {
+    }
+
+    TCompletion Complete(TCompletionInput input) {
+      if (
+        input.CursorPosition < input.Text.length() &&
+          IsUTF8ContinuationByte(input.Text.at(input.CursorPosition)) ||
+        input.Text.length() < input.CursorPosition) {
+        ythrow yexception()
+          << "invalid cursor position " << input.CursorPosition
+          << " for input size " << input.Text.size();
+      }
+
+      TLocalSyntaxContext context = SyntaxAnalysis->Analyze(input);
+
+      TStringBuf prefix = input.Text.Head(input.CursorPosition);
+      TCompletedToken completedToken = GetCompletedToken(prefix);
+
+      return {
+        .CompletedToken = std::move(completedToken),
+        .Candidates = GetCanidates(std::move(context), completedToken),
+      };
+    }
+
+  private:
+    TCompletedToken GetCompletedToken(TStringBuf prefix) {
+      return {
+        .Content = LastWord(prefix),
+        .SourcePosition = LastWordIndex(prefix),
+      };
+    }
+
+    TVector<TCandidate> GetCanidates(TLocalSyntaxContext context, const TCompletedToken& prefix) {
+      TNameRequest request = {
+        .Prefix = TString(prefix.Content),
+        .Limit = Configuration.Limit,
+      };
+
+      for (const auto& [first, _] : context.Keywords) {
+        request.Keywords.emplace_back(first);
+      }
+
+      if (context.Pragma) {
+        TPragmaName::TConstraints constraints;
+        constraints.Namespace = context.Pragma->Namespace;
+        request.Constraints.Pragma = std::move(constraints);
+      }
+
+      if (context.IsTypeName) {
+        request.Constraints.Type = TTypeName::TConstraints();
+      }
+
+      if (context.Function) {
+        TFunctionName::TConstraints constraints;
+        constraints.Namespace = context.Function->Namespace;
+        request.Constraints.Function = std::move(constraints);
+      }
+
+      if (context.Hint) {
+        THintName::TConstraints constraints;
+        constraints.Statement = context.Hint->StatementKind;
+        request.Constraints.Hint = std::move(constraints);
+      }
+
+      if (request.IsEmpty()) {
+        return {};
+      }
+
+      // User should prepare a robust INameService
+      TNameResponse response = Names->Lookup(std::move(request)).ExtractValueSync();
+
+      return Convert(std::move(response.RankedNames), std::move(context.Keywords));
+    }
+
+    TVector<TCandidate> Convert(TVector<TGenericName> names, TLocalSyntaxContext::TKeywords keywords) {
+      TVector<TCandidate> candidates;
+      for (auto& name : names) {
+        candidates.emplace_back(std::visit([&](auto&& name) -> TCandidate {
+          using T = std::decay_t<decltype(name)>;
+          if constexpr (std::is_base_of_v<TKeyword, T>) {
+            TVector<TString>& seq = keywords[name.Content];
+            seq.insert(std::begin(seq), name.Content);
+            return {ECandidateKind::Keyword, FormatKeywords(seq)};
+          }
+          if constexpr (std::is_base_of_v<TPragmaName, T>) {
+            return {ECandidateKind::PragmaName, std::move(name.Indentifier)};
+          }
+          if constexpr (std::is_base_of_v<TTypeName, T>) {
+            return {ECandidateKind::TypeName, std::move(name.Indentifier)};
+          }
+          if constexpr (std::is_base_of_v<TFunctionName, T>) {
+            name.Indentifier += "(";
+            return {ECandidateKind::FunctionName, std::move(name.Indentifier)};
+          }
+          if constexpr (std::is_base_of_v<THintName, T>) {
+            return {ECandidateKind::HintName, std::move(name.Indentifier)};
+          }
+        }, std::move(name)));
+      }
+      return candidates;
+    }
+
+    TConfiguration Configuration;
+    ILocalSyntaxAnalysis::TPtr SyntaxAnalysis;
+    INameService::TPtr Names;
+  };
+
+  ISqlCompletionEngine::TPtr MakeSqlCompletionEngine(
+    TLexerSupplier lexer,
+    INameService::TPtr names,
+    ISqlCompletionEngine::TConfiguration configuration) {
+    return ISqlCompletionEngine::TPtr(
+      new TSqlCompletionEngine(lexer, std::move(names), std::move(configuration)));
+  }
+
+} // namespace NSQLComplete
+
+template <>
+void Out<NSQLComplete::ECandidateKind>(IOutputStream& out, NSQLComplete::ECandidateKind kind) {
+  switch (kind) {
+    case NSQLComplete::ECandidateKind::Keyword:
+      out << "Keyword";
+      break;
+    case NSQLComplete::ECandidateKind::PragmaName:
+      out << "PragmaName";
+      break;
+    case NSQLComplete::ECandidateKind::TypeName:
+      out << "TypeName";
+      break;
+    case NSQLComplete::ECandidateKind::FunctionName:
+      out << "FunctionName";
+      break;
+    case NSQLComplete::ECandidateKind::HintName:
+      out << "HintName";
+      break;
+  }
+}
+
+template <>
+void Out<NSQLComplete::TCandidate>(IOutputStream& out, const NSQLComplete::TCandidate& candidate) {
+  out << "{" << candidate.Kind << ", \"" << candidate.Content << "\"}";
+}
+```
