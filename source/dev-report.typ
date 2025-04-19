@@ -266,11 +266,133 @@
 
 #chapter("Реализация автодополнения имен объектов БД")
 
-TODO: ...
+В рамках данного этапа необходимо было подготовить пригодную для использования в YDB CLI реализацию сервиса имен, а также добавить элементы семантического анализа для определения типа имен и их последующей выдачи в списке кандидатов.
+
+Более формально -- реализация автодополнения имен объектов БД в модуле автодополнения. Критерий выполнения: разработан алгоритм возвращающий имена объектов БД в качестве кандидатов на автодополнение, автодополнение имен наиболее важных типов объектов БД, установленных на этапе анализа требований, в YDB CLI в интерактивном режиме. 
+
+Представитель команды YQL очень помог мне с данной задачей, предоставив данные о частоте использования конструкций языка, а также списки имен функций, типов, прагм и прочего в файлах формата JSON.
+
+Была реализована загрузка частот из JSON в следующую структуру.
+
+#figure([
+  ```cpp
+  struct TFrequencyData {
+    THashMap<TString, size_t> Keywords;
+    THashMap<TString, size_t> Pragmas;
+    THashMap<TString, size_t> Types;
+    THashMap<TString, size_t> Functions;
+    THashMap<TString, size_t> Hints;
+  };
+  ```
+], caption: [Структура данных с частотами имен])
+
+Далее с ее помощью реализован интерфейс стратегии ранжирования.
+
+#figure([
+  ```cpp
+  class IRanking {
+  public:
+    ...
+    virtual void CropToSortedPrefix(
+      TVector<TGenericName>& names, size_t limit) = 0;
+    ...
+  };
+  ```
+], caption: [Интерфейс стратегии ранжирования])
+
+Ранжирование не только сортирует список, но и оставляет только первые k элементов. Это сделано, чтобы воспользоваться преимуществами алгоритма `std::parial_sort`.
+
+#figure([
+  ```cpp
+  ...
+  void CropToSortedPrefix(TVector<TGenericName>& names, size_t limit) override {
+    limit = std::min(limit, names.size());
+    ...
+    ::PartialSort(
+      std::begin(rows), std::begin(rows) + limit, std::end(rows),
+      [this](const TRow& lhs, const TRow& rhs) {
+        const size_t lhs_weight = ReversedWeight(lhs.Weight);
+        const auto lhs_content = ContentView(lhs.Name);
+
+        const size_t rhs_weight = ReversedWeight(rhs.Weight);
+        const auto rhs_content = ContentView(rhs.Name);
+
+        return std::tie(lhs_weight, lhs_content) <
+             std::tie(rhs_weight, rhs_content);
+    });
+    ...
+    names.crop(limit);
+    ...
+  }
+  ...
+  ```
+], caption: [Реализация алгоритма ранжирования])
+
+Сами же имена были загружены из JSON в следующую структуру данных.
+
+#figure([
+  ```cpp
+  struct NameSet {
+    TVector<TString> Pragmas;
+    TVector<TString> Types;
+    TVector<TString> Functions;
+    THashMap<EStatementKind, TVector<TString>> Hints;
+  };
+  ```
+], caption: [Структура данных с множеством имен])
+
+Далее необходимо было научиться распознавать типы имен в запросе. Реализовать это было не очень сложно, ведь, грубо говоря, antlr4-c3 можно сконфигурировать так, чтобы он возвращал parser call stack при нахождении имени. 
+
+#figure([
+  ```cpp
+
+  bool IsLikelyPragmaStack(const TParserCallStack& stack);
+  bool IsLikelyTypeStack(const TParserCallStack& stack);
+  bool IsLikelyFunctionStack(const TParserCallStack& stack);
+  bool IsLikelyHintStack(const TParserCallStack& stack);
+  ...
+  bool IsLikelyFunctionStack(const TParserCallStack& stack) {
+    return EndsWith({
+      RULE(Unary_casual_subexpr), 
+      RULE(Id_expr)
+    }, stack) || EndsWith({
+      RULE(Unary_casual_subexpr),
+      RULE(Atom_expr),
+      RULE(An_id_or_type)
+    }, stack) || EndsWith({
+      RULE(Atom_expr), 
+      RULE(Id_or_type)
+    }, stack);
+  }
+  ...
+  ```
+], caption: [Распознавание имени функции по parser call stack])
+
+Достаточно интересным было распознавание имени пользовательской функции YQL. Дело в том, что оно состоит из пространства имен и непосредственно имени функции. Конечно, при набранном пространстве имен, движок должен предлагать только название функции.
+
+#figure([
+  ```cpp
+  TMaybe<TLocalSyntaxContext::TFunction> FunctionMatch(
+    const NSQLTranslation::TParsedTokenList& tokens, 
+    const TC3Candidates& candidates) {
+    if (!AnyOf(candidates.Rules, IsLikelyFunctionStack)) {
+      return Nothing();
+    }
+
+    TLocalSyntaxContext::TFunction function;
+    if (EndsWith(tokens, {"ID_PLAIN", "NAMESPACE"})) {
+      function.Namespace = tokens[tokens.size() - 2].Content;
+    } else if (EndsWith(tokens, {"ID_PLAIN", "NAMESPACE", ""})) {
+      function.Namespace = tokens[tokens.size() - 3].Content;
+    }
+    return function;
+  }
+  ```
+], caption: [Обработка имени функции])
 
 #structural-element("Заключение")
 
-TODO: ...
+
 
 #structural-element("Cписок использованных источников")
 
