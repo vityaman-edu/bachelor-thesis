@@ -93,16 +93,114 @@
 
 Конечно, необходимо было скрыть библиотеку за интерфейсом движка автодополнения.
 
-Для выдачи ключевых слов достаточно было отфильтровать лексемы, соответствующие, например, числам и именам. 
+#figure([
+  ```cpp
+  struct TCompletionInput {
+    TStringBuf Text;
+    size_t CursorPosition = Text.length();
+  };
+
+  enum class ECandidateKind {
+    Keyword,
+    ...
+  };
+
+  struct TCandidate {
+    ECandidateKind Kind;
+    TString Content;
+    ...
+  };
+
+  struct TCompletion {
+    ...
+    TVector<TCandidate> Candidates;
+  };
+
+  class ISqlCompletionEngine {
+  public:
+    ...
+    virtual TCompletion Complete(TCompletionInput input) = 0;
+    ...
+  };
+  ```
+], caption: [Интерфейс движка автодополнения])
+
+Для выдачи ключевых слов достаточно было удалить лексемы, соответствующие, например, числам и именам. Кроме того, antlr4-c3 выдает сразу последовательности лексем, если последовательность однозначна.
+
+#figure([
+  ```cpp
+  TLocalSyntaxContext::TKeywords SiftedKeywords(
+    const TC3Candidates& candidates) {
+    const auto& vocabulary = Grammar->GetVocabulary();
+    const auto& keywordTokens = Grammar->GetKeywordTokens();
+
+    TLocalSyntaxContext::TKeywords keywords;
+    for (const auto& token : candidates.Tokens) {
+      if (keywordTokens.contains(token.Number)) {
+        auto display = Display(vocabulary, token.Number);
+        auto& following = keywords[std::move(display)];
+        for (auto next : token.Following) {
+          following.emplace_back(Display(vocabulary, next));
+        }
+      }
+    }
+    return keywords;
+  }
+  ```
+], caption: [Просеивание ключевых слов])
 
 Также необходимо было решить следующую проблему. 
 Дело в том, что в SQL ключевые слова не являются полностью зарезервированными, из-за чего могут являться корректными именами, что отражено в грамматике и из-за чего antlr4-c3 возвращал почти все ключевые слова в каждой позциции, где ожидалось имя. 
-Проблема была решена.
+Проблема была решена правильной настройкой antlr4-c3 -- игнорированием некоторых правил вывода.
+
+#figure([
+  ```cpp
+  const TVector<TRuleId> KeywordRules = {
+    RULE(Keyword),
+    RULE(Keyword_expr_uncompat),
+    RULE(Keyword_table_uncompat),
+    RULE(Keyword_select_uncompat),
+    RULE(Keyword_alter_uncompat),
+    RULE(Keyword_in_uncompat),
+    RULE(Keyword_window_uncompat),
+    RULE(Keyword_hint_uncompat),
+    RULE(Keyword_as_compat),
+    RULE(Keyword_compat),
+  };
+  ```
+], caption: [Правила вывода, подлежащие игнорированию])
 
 Далее модуль автодополнения был внедрен в YDB CLI. В качестве цвета для ключевых слов был выбран синий (в соответствии с темой Monaco).
 Сделать это было не очень сложно, ведь для реализации интерактивного решения в клиентском приложении используется библиотека Replxx, предоставляющая интерфейс для интеграции автодополнения и подсветки.
 
-Фрагменты кода приведены в приложениях к отчету.
+#figure([
+  ```cpp
+  TCompletions Apply(
+    const std::string& prefix, int& /* contextLen */) override {
+    auto completion = Engine->Complete({
+      .Text = prefix,
+      .CursorPosition = prefix.length(),
+    });
+
+    replxx::Replxx::completions_t entries;
+    for (auto& candidate : completion.Candidates) {
+      const auto back = candidate.Content.back();
+      if (
+        !IsLeftPunct(back) && back != '<' 
+        || IsQuotation(back)) {
+        candidate.Content += ' ';
+      }
+
+      entries.emplace_back(
+        std::move(candidate.Content),
+        ReplxxColorOf(candidate.Kind));
+    }
+    return entries;
+  }
+  ```
+], caption: [Использование API Replxx])
+
+Весь код доступен для чтения в репозитории проекта YDB на GitHub.
 
 #chapter("Проектирование интерфейса 
 источника имен объектов БД")
@@ -126,9 +224,45 @@
 
 - Источник имен должен выдавать отсортированные по релевантности имена.
 
+#figure([
+  ```cpp
+  ...
+  using TGenericName = std::variant<
+    TKeyword,
+    TPragmaName,
+    TTypeName,
+    ...>;
+
+  struct TNameRequest {
+    TVector<TString> Keywords;
+    struct {
+      TMaybe<TPragmaName::TConstraints> Pragma;
+      TMaybe<TTypeName::TConstraints> Type;
+      ...
+    } Constraints;
+    TString Prefix = "";
+    size_t Limit = 128;
+    ...
+  }
+
+  struct TNameResponse {
+    TVector<TGenericName> RankedNames;
+  };
+
+  class INameService {
+  public:
+    ...
+    virtual TFuture<TNameResponse> Lookup(
+      TNameRequest request) = 0;
+    ...
+  };
+  ...
+  ```
+], caption: [Интерфейс сервиса имен])
+
 Для модульного тестирования данного интерфейса также была разработана заглушка со списком имен, представленном прямо в коде.
 
-Фрагменты кода приведены в приложениях к отчету.
+Весь код доступен для чтения в репозитории проекта YDB на GitHub.
 
 #chapter("Реализация автодополнения имен объектов БД")
 
@@ -145,7 +279,3 @@ TODO: ...
   title: none,
   full: true,
 )
-
-#structural-element("Приложение")
-
-TODO: ...
