@@ -4,7 +4,8 @@
   specialty: str,
   title: str,
   author: str,
-  mentor: str,
+  mentor: content,
+  consultant: content,
   year: int,
   doc,
 ) = {
@@ -36,6 +37,8 @@
     block(inset: (left: 1.25cm), it)
   }
 
+  show link: underline
+
   set figure.caption(separator: [ --- ])
 
   show figure.where(kind: image): set figure(supplement: "Рисунок")
@@ -65,8 +68,9 @@
     \ \ \ \ \ \
     #heading(outlined: false)[#title] \
     \ \ \ \
-    Автор: #author \
-    Руководитель: #mentor \
+    *Автор*: #author \
+    *Руководитель от университета ИТМО*: #mentor \
+    *Руководитель от профильной организации*: #consultant \
     \
   ]
 
