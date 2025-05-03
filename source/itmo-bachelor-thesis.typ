@@ -22,6 +22,7 @@
     size: 14pt,
     spacing: 150%,
     lang: "ru",
+    hyphenate: false,
   )
 
   set par(
@@ -69,8 +70,8 @@
     #heading(outlined: false)[#title] \
     \ \ \ \
     *Автор*: #author \
-    *Руководитель от университета ИТМО*: #mentor \
-    *Руководитель от профильной организации*: #consultant \
+    *Руководитель от университета ИТМО*: \ #mentor \
+    *Руководитель от профильной организации*: \ #consultant \
     \
   ]
 
