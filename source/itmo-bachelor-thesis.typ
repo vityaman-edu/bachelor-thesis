@@ -116,7 +116,10 @@
   )[#name --- #definition]
 }
 
-#let chapter(name) = {
+#let chapter(n, name) = {
   pagebreak()
-  align(center)[#heading[#name]]
+  counter(heading).step()
+  align(center)[#structural-element(
+    "Глава " + str(n) + ". " + name
+  )]
 }
