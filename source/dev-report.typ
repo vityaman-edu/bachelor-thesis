@@ -1,4 +1,4 @@
-#import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, term, structural-element, chapter
+#import "core/itmo-bachelor-thesis.typ": itmo-bachelor-thesis, term, structural-element, chapter
 
 #show: itmo-bachelor-thesis.with(
   faculty: "Факультет программной инженерии и компьютерной техники",

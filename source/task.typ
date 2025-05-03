@@ -1,4 +1,4 @@
-#import "itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, term
+#import "core/itmo-bachelor-thesis.typ": itmo-bachelor-thesis, structural-element, term
 
 #show: itmo-bachelor-thesis.with(
   title: [
