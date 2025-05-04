@@ -117,7 +117,6 @@
 }
 
 #let chapter(n, name) = {
-  pagebreak()
   counter(heading).step()
   align(center)[#structural-element(
     "Глава " + str(n) + ". " + name
