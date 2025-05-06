@@ -182,9 +182,15 @@ ANTLR является инструментом для разработки гр
 
 == Существующие решения
 
-#lorem(50)
+- YDB Embedded UI, gravity-ui/websql-autocomplete, 
+- ClickHouse, Sorted strings
+- Postgres CLI, heuristics
+- MySQL Shell & Workbench, ANTLR4-C3
 
-#lorem(25)
+- Gopls
+- V Analyzer
+- Clangd
+- Rust Analyzer
 
 #chapter(2, "Проектирование программного модуля")
 
