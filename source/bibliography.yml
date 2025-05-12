@@ -41,22 +41,43 @@ parr-allstar:
     url: "https://www.antlr.org/papers/allstar-techreport.pdf"
     access-date: "2025-05-03"
 
-yql-ydb-reference:
+woods-atn:
+  type: Article
+  title: "Transition Network Grammars for Natural Language Analysis"
+  author:
+    - "W. A. Woods"
+  date: 1970
+  electronic:
+    url: "https://dl.acm.org/doi/pdf/10.1145/355598.362773"
+    access-date: "2025-05-12"
+
+keystroke-savings:
+  type: Article
+  title: "Evaluating Word Prediction: Framing Keystroke Savings"
+  authors:
+    - "Keith Trnka"
+    - "Kathleen F. McCoy"
+  date: 2006
+  electronic:
+    url: "https://aclanthology.org/P08-2066.pdf"
+    access-date: "2025-05-12"
+
+ydb-reference:
   type: Reference
   title: "YQL Reference"
   publisher: "YDB"
   date: 2025
   electronic:
-    url: "https://ydb.tech/docs/en/yql/reference/"
+    url: "https://ydb.tech/docs/en"
     access-date: "2025-05-03"
 
-yql-ytsaurus-reference:
+ytsaurus-reference:
   type: Reference
   title: "YQL Reference"
   publisher: "YTsaurus"
   date: 2025
   electronic:
-    url: "https://ytsaurus.tech/docs/en/yql/"
+    url: "https://ytsaurus.tech/docs/en"
     access-date: "2025-05-03"
 
 mike-antlr4-c3:
@@ -68,3 +89,13 @@ mike-antlr4-c3:
   electronic:
     url: "https://soft-gems.net/universal-code-completion-using-antlr3"
     access-date: "2025-05-03"
+
+yandex-yql:
+  type: Post
+  title: "Как писать меньше кода для MR, или Зачем миру ещё один язык запросов? История Yandex Query Language"
+  author:
+    - "Иван Блинков"
+  date: 2016
+  electronic:
+    url: "https://habr.com/ru/companies/yandex/articles/312430/"
+    access-date: "2025-05-12"
