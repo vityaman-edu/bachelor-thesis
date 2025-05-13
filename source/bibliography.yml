@@ -85,10 +85,30 @@ mike-antlr4-c3:
   title: "Universal Code Completion using ANTLR3"
   author: 
     - "Mike Lischke"
-  date: 2023
+  date: 2015
   electronic:
     url: "https://soft-gems.net/universal-code-completion-using-antlr3"
     access-date: "2025-05-03"
+
+fernando-antlr4-c3:
+  type: Post
+  title: "Implementing Code-Completion for VS Code with ANTLR"
+  author:
+    - "Fernando Dobladez"
+  date: 2021
+  electronic:
+    url: "https://neuroning.com/post/implementing-code-completion-for-vscode-with-antlr/"
+    access-date: "2025-05-13"
+
+tomassetti-antlr4-c3:
+  type: Post
+  title: "Code Completion with ANTLR4-c3"
+  author: 
+   - "Alessio Stalla"
+  date: 2020
+  electronic:
+    url: "https://tomassetti.me/code-completion-with-antlr4-c3/"
+    access-date: "2025-05-13"
 
 yandex-yql:
   type: Post
