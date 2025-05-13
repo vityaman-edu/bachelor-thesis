@@ -80,6 +80,15 @@ ytsaurus-reference:
     url: "https://ytsaurus.tech/docs/en"
     access-date: "2025-05-03"
 
+lsp-specification:
+  type: Reference
+  title: "Language Server Protocol Specification"
+  publisher: "Microsoft"
+  date: 2022
+  electronic:
+    url: "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/"
+    access-date: "2025-05-13"
+
 mike-antlr4-c3:
   type: Post
   title: "Universal Code Completion using ANTLR3"
