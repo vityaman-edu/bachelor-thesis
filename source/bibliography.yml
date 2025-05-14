@@ -64,7 +64,7 @@ keystroke-savings:
 
 ydb-reference:
   type: Reference
-  title: "YQL Reference"
+  title: "YDB Reference"
   publisher: "YDB"
   date: 2025
   electronic:
@@ -73,7 +73,7 @@ ydb-reference:
 
 ytsaurus-reference:
   type: Reference
-  title: "YQL Reference"
+  title: "YTsaurus Reference"
   publisher: "YTsaurus"
   date: 2025
   electronic:
