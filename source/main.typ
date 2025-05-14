@@ -56,7 +56,7 @@
 
 #term([CLI], [command-line interface])
 
-#term([GUI], [TODO TODO TODO])
+#term([GUI], [graphical user interface])
 
 #term([LSP], [language server protocol])
 
@@ -81,10 +81,6 @@
 
 #term([YDB], [распределённая отказоустойчивая Distributed SQL СУБД])
 
-#term([HTAP], [TODO TODO TODO])
-
-#term([SDK], [TODO TODO TODO])
-
 #term([YTsaurus], [платформа обработки данных c поддержкой MapReduce])
 
 #term([YQL], [универсальный декларативный язык запросов к YDB, диалект SQL])
@@ -92,10 +88,6 @@
 #term([Arc], [СКВ для монорепозитория компании Яндекс])
 
 #term([ANTLR4], [генератор парсеров])
-
-#term([ATN], [TODO TODO TODO TODO])
-
-#term([Шаблонизатор], [TODO TODO TODO TODO])
 
 #term([antlr4-c3], [библиотека для автодополнения])
 
