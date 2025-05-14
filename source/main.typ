@@ -4,8 +4,7 @@
   faculty: "Факультет программной инженерии и компьютерной техники",
   program: "Системное и прикладное программное обеспечение",
   specialty: "Программно-информационные системы",
-  title: "Реализация модуля контекcтно-зависимого
-  автодополнения запросов на YQL",
+  title: "Реализация модуля контекcтно-зависимого автодополнения запросов на YQL",
   author: "Смирнов Виктор Игоревич",
   mentor: "Осипов Святослав Владимирович",
   consultant: "Мясников Алексей Сергеевич",
@@ -1015,12 +1014,6 @@ YQL позвоялет задать СУБД некоторые параметр
 
 #chapter(5, "Валидация и внедрение")
 
-== Метрика качества автодополнения
-
-Для оценки качества автодополнения была выбрана метрика Keystroke Savings (KS) [TODO Cite]. По сути, она показывает, сколько нажатий на клавиши сэкономил пользователь благодаря автодополнению.
-
-TODO
-
 == Внедрение в YDB CLI
 
 Библиотека Replxx, по средствам которой реализован интерактивный режим YDB CLI, предоставляет удобный интерфейс для внедрения автодополнения. Для этого необходимо зарегистрировать пользовательскую функцию, возвращающую список пар (слово, цвет) по заданному префиксу текста, из которого можно понять позицию курсора. Весь текст также можно получить. Кроме этого, есть возможность установки длины дополняемого слова, что полезно при замене имен, состоящих из нескольких лексем.
@@ -1031,8 +1024,93 @@ TODO
 
 [TODO code]
 
-
 [TODO рассказать про Replxx подробно, какие там колбэки нужно переопределить]
+
+== Оценка качества автодополнения
+
+Для оценки качества автодополнения была выбрана метрика Keystroke Savings (KS) @keystroke-savings. По сути, она показывает, сколько нажатий на клавиши сэкономил пользователь благодаря автодополнению (@ks).
+
+$ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
+
+Для проведения измерений были выбраны два YQL запроса (@experiment-select и @experiment-create) и реализована симуляция работы пользователя (@experiment-simulation). Select-запрос выбран так, чтобы продемонстрировать не только сильные стороны текущей реализации (поддержка имен объектов, типов, функций), но и недостатки в виде отсутствия на момент написания ВКР автодополнения имен колонок. Естественно, данный будет исправлен в будущем. На Create-запросе скорее всего будет достигнут почти наилучший результат без использования генеративных моделей машинного обучения. Единственное улучшение там -- подсказка имени колонки текущей таблицы в `PRIMARY KEY`.
+
+#figure(
+  [
+    ```sql
+    SELECT
+      Re2::Capture("a.*")(sa.title),
+      CAST(sr.series_id AS Uint64),
+      sa.season_id
+    FROM
+      yt:saurus.`/maxim/seasons` AS sa
+    INNER JOIN
+      `/test/service/series` AS sr
+    ON sa.series_id = sr.series_id
+    WHERE sa.series_id = 1;
+    ```
+  ],
+  caption: "Select-запрос для оценки метрики KS",
+) <experiment-select>
+
+#figure(
+  [
+    ```sql
+    CREATE TABLE `/test/service/series` (
+      series_id Uint64,
+      title Utf8,
+      series_info Utf8,
+      release_date Uint64,
+      PRIMARY KEY (series_id)
+    );
+    ```
+  ],
+  caption: "Create-запрос для оценки метрики KS",
+) <experiment-create>
+
+#figure(
+  [
+    ```cpp
+    double EvaluateKeystrokeSavingsAscii(
+      ISqlCompletionEngine& engine, TStringBuf text) {
+      using TCIAStringBuf = TCaseInsensitiveAsciiStringBuf;
+
+      const size_t keysNormal = text.size();
+      size_t keysWithPrediction = 0;
+
+      size_t i = 0;
+      while (i < text.size()) {
+        auto [token, candidates] = engine.Complete({
+          .Text = text,
+          .CursorPosition = i,
+        });
+
+        if (candidates.size() == 1) {
+          auto candidate = candidates[0];
+          auto skip = candidate.Content.size()
+                    - token.Content.size();
+
+          auto expected = TCIAStringBuf(text).substr(
+            i - token.Content.length(),
+            candidate.Content.length())
+
+          if (expected == TCIAStringBuf(candidate.Content)) {
+            i += skip;
+          }
+        }
+
+        i += 1;
+        keysWithPrediction += 1;
+      }
+
+      return static_cast<double>(
+        keysNormal - keysWithPrediction) / keysNormal;
+    }
+    ```
+  ],
+  caption: "Симуляция работы пользователя",
+) <experiment-simulation>
+
+Результаты измерений показали, что на Select-запросе метрика KS равна 0.217, а на Create-запросе -- 0.161. Для сравнения, в YDB CLI до внедрения модуля автодополнения поддерживалось автодополнение только слов из списка "SELECT", "FROM", "WHERE", "GROUP", "ORDER", "BY", "LIMIT", "OFFSET", "EXPLAIN", "AST", "SET". Новый алгоритм автодополнения очевидно точно будет обладать не меньшим значением метрики KS, так как поддерживает автодополнение строго большего количества слов.
 
 #structural-element("Заключение")
 
