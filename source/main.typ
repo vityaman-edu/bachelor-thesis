@@ -1016,15 +1016,48 @@ YQL позвоялет задать СУБД некоторые параметр
 
 == Внедрение в YDB CLI
 
-Библиотека Replxx, по средствам которой реализован интерактивный режим YDB CLI, предоставляет удобный интерфейс для внедрения автодополнения. Для этого необходимо зарегистрировать пользовательскую функцию, возвращающую список пар (слово, цвет) по заданному префиксу текста, из которого можно понять позицию курсора. Весь текст также можно получить. Кроме этого, есть возможность установки длины дополняемого слова, что полезно при замене имен, состоящих из нескольких лексем.
+Библиотека Replxx, по средствам которой реализован интерактивный режим YDB CLI, предоставляет удобный интерфейс для внедрения автодополнения. Для этого необходимо зарегистрировать пользовательскую функцию, возвращающую список пар (слово, цвет) по заданному префиксу текста, из которого можно понять позицию курсора. Весь текст также можно получить. Кроме этого, есть возможность установки длины дополняемого слова, что полезно при замене имен, состоящих из нескольких лексем. Данных возможностей вполне достаточно для достижения высокого уровня пользовательского опыта (@ydb-cli-replxx). Для автодополнения по нажатию на клавишу TAB используется полная версия сервиса имен, загружающая имена объектов, а для подсказок, появляющихся налету по мере ввода текста, сервис имен выдает только ту информацию, которая не требует RPC, для снижения задержек.
 
-[TODO some code]
+#figure(
+  [
+    ```cpp
+    Rx.set_completion_callback([this](... prefix, int& contextLen) {
+      return ApplyHeavy(Rx.get_state().text(), prefix, contextLen);
+    };
+    Rx.set_hint_callback([this](... prefix, int& contextLen, ...) {
+      return ApplyLight(Rx.get_state().text(), prefix, contextLen);
+    };
+    ```
+  ],
+  caption: "Конфигурация библиотеки Replxx в YDB CLI",
+) <ydb-cli-replxx>
 
-Для автодополнения имен объектов БД был реализован интерфейс `SimpleSchema` [TODO cite] при помощи клиента из YDB C++ SDK.
+Для автодополнения имен объектов БД было просто реализовать интерфейс `SimpleSchema` (@ydb-simple-schema-cpp) при помощи клиента из YDB C++ SDK.
 
-[TODO code]
+#figure(
+  [
+    ```cpp
+    NThreading::TFuture<TVector<NSQLComplete::TFolderEntry>>
+    List(TString folder) const override {
+      return NScheme::TSchemeClient(Driver_)
+        .ListDirectory(Qualified(folder))
+        .Apply(Convert(std::move(folder)));
+    }
+    ```
+  ],
+  caption: "Получение имен объектов в YDB CLI",
+) <ydb-simple-schema-cpp>
 
-[TODO рассказать про Replxx подробно, какие там колбэки нужно переопределить]
+@demonstration Демонстриурет работу автодополнения текста запроса в YDB CLI.
+
+#figure(
+  grid(
+    columns: 2,
+    image("image/ydb_cli_1.png"), image("image/ydb_cli_2.png"),
+    image("image/ydb_cli_3.png"), image("image/ydb_cli_4.png"),
+  ),
+  caption: "Демонстрация работы автодополнения в YDB CLI",
+) <demonstration>
 
 == Оценка качества автодополнения
 
@@ -1041,10 +1074,8 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
       Re2::Capture("a.*")(sa.title),
       CAST(sr.series_id AS Uint64),
       sa.season_id
-    FROM
-      yt:saurus.`/maxim/seasons` AS sa
-    INNER JOIN
-      `/test/service/series` AS sr
+    FROM yt:saurus.`/maxim/seasons` AS sa
+    INNER JOIN `/test/service/series` AS sr
     ON sa.series_id = sr.series_id
     WHERE sa.series_id = 1;
     ```
@@ -1072,36 +1103,25 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
     ```cpp
     double EvaluateKeystrokeSavingsAscii(
       ISqlCompletionEngine& engine, TStringBuf text) {
-      using TCIAStringBuf = TCaseInsensitiveAsciiStringBuf;
-
       const size_t keysNormal = text.size();
       size_t keysWithPrediction = 0;
-
-      size_t i = 0;
-      while (i < text.size()) {
+      for (size_t i = 0; i < text.size()) {
         auto [token, candidates] = engine.Complete({
           .Text = text,
           .CursorPosition = i,
         });
-
         if (candidates.size() == 1) {
           auto candidate = candidates[0];
           auto skip = candidate.Content.size()
                     - token.Content.size();
-
-          auto expected = TCIAStringBuf(text).substr(
-            i - token.Content.length(),
-            candidate.Content.length())
-
+          TCaseInsensitiveAsciiStringBuf expected = ...;
           if (expected == TCIAStringBuf(candidate.Content)) {
             i += skip;
           }
         }
-
         i += 1;
         keysWithPrediction += 1;
       }
-
       return static_cast<double>(
         keysNormal - keysWithPrediction) / keysNormal;
     }
