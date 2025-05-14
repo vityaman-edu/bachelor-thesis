@@ -32,6 +32,7 @@
     ),
     justify: true,
     spacing: 1em,
+    leading: 1em,
   )
 
   show heading.where(depth: 2): it => {
@@ -118,7 +119,5 @@
 
 #let chapter(n, name) = {
   counter(heading).step()
-  align(center)[#structural-element(
-    "Глава " + str(n) + ". " + name
-  )]
+  align(center)[#structural-element("Глава " + str(n) + ". " + name)]
 }
