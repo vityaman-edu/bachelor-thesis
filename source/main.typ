@@ -62,25 +62,25 @@
 
 #term([СУБД], [система управления БД])
 
-#term([IDE], [integrated development environment])
+#term([IDE], [integrated development environment (интегрированная среда разработки)])
 
-#term([CLI], [command-line interface])
+#term([CLI], [command-line interface (интерфейс командной строки)])
 
-#term([GUI], [graphical user interface])
+#term([GUI], [graphical user interface (графическая оболочка)])
 
 #term([LSP], [language server protocol])
 
-#term([SDK], [software development kit])
+#term([SDK], [software development kit (комплект для разработки программного обеспечения)])
 
-#term([UDF], [user-defined function])
+#term([UDF], [user-defined function (пользовательская функция)])
 
 #term([СКВ], [система контроля версий])
 
-#term([AST], [abstract syntax tree])
+#term([AST], [abstract syntax tree (абстрактное синтаксическое дерево)])
 
-#term([ATN], [augmented transition network])
+#term([ATN], [augmented transition network (расширенная сеть переходов)])
 
-#term([RPC], [remote procedure call])
+#term([RPC], [remote procedure call (удалённый вызов процедур)])
 
 #structural-element("Термины и определения")
 
