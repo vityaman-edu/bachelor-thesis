@@ -223,17 +223,10 @@ ANTLR является инструментом для разработки гр
 
 == Библиотека автодополнения antlr4-c3
 
-Библиотека antlr4-c3 построена на основе инфраструктуры ANTLR4 и предоставляет интерфейс, позволяющий в заданной позиции курсора в тексте запроса получить множество кандидатов на автодополнение @mike-antlr4-c3 @fernando-antlr4-c3 @tomassetti-antlr4-c3. @antlr4-c3-api демонстрирует С++ интерфейс библиотеки.
+Библиотека antlr4-c3 построена на основе инфраструктуры ANTLR4 и предоставляет интерфейс, позволяющий в заданной позиции курсора в тексте запроса получить множество кандидатов на автодополнение @mike-antlr4-c3 @fernando-antlr4-c3 @tomassetti-antlr4-c3. @antlr4-c3-api и @antlr4-c3-api-result демонстрируют С++ интерфейс библиотеки.
 
 #figure(
   ```cpp
-  ...
-  struct CandidatesCollection {
-    std::map<size_t, TokenList> tokens;
-    std::map<size_t, CandidateRule> rules;
-  ...
-  };
-  ...
   class CodeCompletionCore {
   ...
   public:
@@ -247,10 +240,19 @@ ANTLR является инструментом для разработки гр
       size_t caretTokenIndex, ...);
   ...
   };
-  ...
   ```,
   caption: "Интерфейс библиотеки antlr4-c3",
 ) <antlr4-c3-api>
+
+#figure(
+  ```cpp
+  struct CandidatesCollection {
+    std::map<size_t, TokenList> tokens;
+    std::map<size_t, CandidateRule> rules;
+  };
+  ```,
+  caption: "Результат работы библиотеки antlr4-c3",
+) <antlr4-c3-api-result>
 
 Для создания компонента необходимо передать `antlr4::Parser` для дальнешего извлечения из него ATN и потока лексем. Можно задать игнорируемые лексемы, которые не будут содержаться в поле `tokens` результата, а также правила вывода, которые должны быть в поле `rules`, если окажется, что они накрывают курсор. Перед вызовом метода `collectCandidates` клиент должен предоставить заполненный поток лексем и передать индекс лексемы, на которой находится курсор.
 
@@ -268,14 +270,9 @@ ANTLR является инструментом для разработки гр
 
 #figure(
   ```ts
-  ...
   export interface TableContextSuggestion {
     tables?: Table[];
   }
-
-  export type ColumnSuggestion = TableContextSuggestion;
-  ...
-  export type YQLColumnsSuggestion = ColumnSuggestion & ...;
   ...
   export interface YqlAutocompleteResult extends ... {
     suggestTableIndexes?: TableIndexSuggestion;
@@ -310,7 +307,6 @@ ANTLR является инструментом для разработки гр
     set_completion_reference(prev3_wd);
     COMPLETE_WITH_SCHEMA_QUERY(Query_for_constraint_of_type);
   }
-  ...
   ```,
   caption: "Фрагмент реализации автодополнения в psql",
 ) <psql-pattern-matching-macro>
@@ -351,7 +347,7 @@ ANTLR является инструментом для разработки гр
 
 Обсуждения требований помогли согласовать видение разработчика и заказчика, а также в дальнейшем разработать подходящую архитектуру решения.
 
-== Архитектура
+== Архитектура программного модуля
 
 Несмотря на то, что сам по себе модуль автодополнения не является большим проектом, стоит обсудить его архитектуру для понимания большей картины, в рамках которой будет идти повествование далее. Обращаю внимание на @sql-v1-complete-arch -- схему, выражающую архитектуру программного модуля. По задумке модуль должен состоять из 4 основных частей: фасада, сервиса имен, локального и глобального анализов запроса. В ВКР рассматриваются только первые три элемента, так как четвертый еще предстоит реализовать.
 
@@ -359,8 +355,6 @@ ANTLR является инструментом для разработки гр
   image("image/sql_v1_complete_arch.png"),
   caption: "Архитектура модуля автодополнения",
 ) <sql-v1-complete-arch>
-
-Компонент `SqlCompletionEngine` (@sql-complete-cpp) является точкой входа в модуль, представлен в виде одноименного класса и структур для передачи параметров и результатов. Он имеет асинхронный интерфейс, так как потенциально осуществляет RPC. Вместе с кандидатами на автодополнение также возвращается информация о редактируемом отрезке текста для интеграции со средой разработки.
 
 #figure(
   ```cpp
@@ -378,15 +372,11 @@ ANTLR является инструментом для разработки гр
     TCompletedToken CompletedToken;
     TVector<TCandidate> Candidates;
   };
-
-  class ISqlCompletionEngine {
-    ...
-    virtual NThreading::TFuture<TCompletion>
-    Complete(TCompletionInput input) = 0;
-  };
   ```,
   caption: [Интерфейс `ISqlCompletionEngine`],
 ) <sql-complete-cpp>
+
+Компонент `SqlCompletionEngine` (@sql-complete-cpp) является точкой входа в модуль, представлен в виде одноименного класса и структур для передачи параметров и результатов. Он имеет асинхронный интерфейс, так как потенциально осуществляет RPC. Вместе с кандидатами на автодополнение также возвращается информация о редактируемом отрезке текста для интеграции со средой разработки.
 
 Компонент `NameService` является фасадом над источниками имен, именно он может быть реализован удаленно по отношению к `SqlCompletionEngine`. Он связан с ранжированием кандидатов, так как почти именно имена ими и являются. О данном компоненте речь пойдет в соответствующей главе.
 
@@ -394,29 +384,24 @@ ANTLR является инструментом для разработки гр
 
 #figure(
   ```
-  .
   ├── antlr4
   ├── core
   ├── name
   │   ├── cluster
-  │   │   └── static
   │   ├── object
-  │   │   ├── dispatch
-  │   │   └── simple
-  │   │       └── static
   │   └── service
-  │       ├── cluster
-  │       ├── ranking
-  │       ├── schema
-  │       ├── static
-  │       └── union
-  ├── syntax
+  ├── analysis/local
   └── text
   ```,
   caption: "Дерево директорий модуля автодополнения",
 ) <module-yamake-tree>
 
 Фактически модуль на момент написания ВКР состоит из следующих подмодулей (@module-yamake-tree). Директория `antlr4` содержит вспомогательные компоненты для работы с ANTLR; `core` хранит общие элементы для всех подмодулей; `name/cluster` отвечает за получение списка кластеров в случае YT (источников данных в случае YDB); через `name/object` осуществляется взаимодействие со схемой БД, получение имен объектов; `name/service` является способом получения имен в `SqlCompletionEngine`, там располагается код, относящийся к ранжированию кандидатов, адаптеры к источникам кластеров и имен объектов, а также полезные декораторы; в `syntax` располагается код локального анализа запроса, он назван так по историческим причинам, так как автор полагал, что локальный анализ запроса скорее является синтаксическим, а глобальный семантическим, но позже осознал свою ошибку, в будущем этот модуль будет разделен на `syntax`, `local` и `global`; `text` содержит полезные функции для манипуляции со строками.
+
+// #figure(
+//   image("image/sql_v1_complete_name_arch.png"),
+//   caption: "Архитектура модуля автодополнения",
+// ) <sql-v1-complete-name-arch>
 
 #chapter(3, "Разработка программного модуля")
 
@@ -717,8 +702,6 @@ YQL позволяет задать СУБД некоторые параметр
 
   using TNameIndex = TVector<TNameIndexEntry>;
 
-  ...
-
   TNameIndex BuildNameIndex(TVector<TString> originals, auto normalize) {
     TNameIndex index;
     for (auto& original : originals)
@@ -735,18 +718,13 @@ YQL позволяет задать СУБД некоторые параметр
 #figure(
   ```cpp
   class TPragmaNameService: public IRankingNameService {
-  ...
     NThreading::TFuture<TNameResponse>
     LookupAllUnranked(TNameRequest request) const override {
-      ...
       if (request.Constraints.Pragma) {
         NameIndexScan<TPragmaName>(
-          Pragmas_,
-          request.Prefix,
-          request.Constraints,
-          response.RankedNames);
+          Pragmas_, request.Prefix,
+          request.Constraints, response.RankedNames);
       }
-      ...
     }
   };
   ```,
