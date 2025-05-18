@@ -50,6 +50,12 @@
   set figure.caption(separator: [ --- ])
 
   show figure.where(kind: image): set figure(supplement: "Рисунок")
+  show figure.where(kind: image): it => {
+    block[
+      #rect(it.body)
+      #it.caption
+    ]
+  }
 
   show figure.where(kind: table): set figure(supplement: "Таблица")
   show figure.where(kind: table): set figure.caption(position: top)
