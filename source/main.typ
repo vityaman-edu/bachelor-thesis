@@ -1074,4 +1074,5 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
   "bibliography.yml",
   title: none,
   full: true,
+  style: "gost-r-705-2008-numeric",
 )

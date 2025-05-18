@@ -17,32 +17,46 @@ aho-ullman-compilers:
 
 parr-antlr4:
   type: Book
-  title: "The Definitive ANTLR 4 Reference"
+  title: "The definitive ANTLR 4 reference"
   author:
-    - "Parr, T."
+    - "Terence Parr"
   edition: "2nd ed."
-  publisher: "Pragmatic Bookshelf"
+  publisher: "The Pragmatic Bookshelf"
   date: 2013
-  page-total: 328
+  page-total: 326
   electronic:
     url: "https://pragprog.com/titles/tpantlr2/the-definitive-antlr-4-reference/"
     access-date: "2025-05-03"
 
 parr-allstar:
   type: Report
-  title: "ALL(*): The Adaptive LL(*) Parsing Strategy"
+  title: "Adaptive LL(*) Parsing: The Power of Dynamic Analysis"
   author:
-    - "Parr, T."
-    - "Harwell, S."
-    - "Fisher, K."
-  publisher: "ANTLR"
+    - "Terence Parr"
+    - "Sam Harwell"
+    - "Kathleen Fisher"
+  journal: "ACM Sigplan Notices"
+  publisher: "ACM"
   date: 2014
   electronic:
     url: "https://www.antlr.org/papers/allstar-techreport.pdf"
     access-date: "2025-05-03"
 
+parr-llstar:
+  type: Report
+  title: "LL (*) the foundation of the ANTLR parser generator"
+  author:
+    - "Terence Parr"
+    - "Kathleen Fisher"
+  journal: "ACM Sigplan Notices"
+  publisher: "ACM"
+  date: 2011
+  electronic:
+    url: "https://tupl.cs.tufts.edu/papers/LL-star-PLDI11.pdf"
+    access-date: "2025-05-03"
+
 woods-atn:
-  type: Article
+  type: Report
   title: "Transition Network Grammars for Natural Language Analysis"
   author:
     - "W. A. Woods"
@@ -52,9 +66,9 @@ woods-atn:
     access-date: "2025-05-12"
 
 keystroke-savings:
-  type: Article
+  type: Report
   title: "Evaluating Word Prediction: Framing Keystroke Savings"
-  authors:
+  author:
     - "Keith Trnka"
     - "Kathleen F. McCoy"
   date: 2006
