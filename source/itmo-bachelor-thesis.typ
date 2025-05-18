@@ -41,6 +41,12 @@
 
   show link: underline
 
+  show figure: it => [
+    #v(1em)
+    #it
+    #v(1em)
+  ]
+
   set figure.caption(separator: [ --- ])
 
   show figure.where(kind: image): set figure(supplement: "Рисунок")
