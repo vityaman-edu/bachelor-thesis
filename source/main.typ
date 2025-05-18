@@ -172,7 +172,7 @@ YQL представляется в виде AST, которое может бы
 
 ANTLR является инструментом для разработки грамматик языков и генерации парсеров.
 
-Он имеет свой формат для описания грамматик (расширение `.g4` в 4-м поколении). @yql-grammar-fragment показывает фрагменты ANTLR грамматики языка YQL.
+Он имеет свой формат для описания грамматик (расширение `.g4` в четвертом поколении). @yql-grammar-fragment показывает фрагменты ANTLR грамматики языка YQL.
 
 #figure(
   ```g4
@@ -427,15 +427,10 @@ ANTLR является инструментом для разработки гр
 #figure(
   ```cpp
   struct TLocalSyntaxContext {
-    using TKeywords = THashMap<TString, TVector<TString>>;
-
-    struct TPragma {
-      TString Namespace;
-    };
+    struct TPragma { TString Namespace; };
     ...
     struct TObject {
-      TString Provider;
-      TString Cluster;
+      TString Provider, Cluster;
       TString Path;
       THashSet<EObjectKind> Kinds;
       bool IsEnclosed = false;
@@ -450,14 +445,8 @@ ANTLR является инструментом для разработки гр
     TMaybe<TCluster> Cluster;
     TEditRange EditRange;
   };
-
-  class ILocalSyntaxAnalysis {
-  ...
-      virtual TLocalSyntaxContext
-      Analyze(TCompletionInput input) = 0;
-  };
   ```,
-  caption: "Интерфейс локального анализа запроса",
+  caption: "Результат работы локального анализа запроса",
 ) <syntax-local-cpp>
 
 == Подготовка библиотеки antlr4-c3
@@ -622,12 +611,6 @@ ANTLR является инструментом для разработки гр
     TVector<TGenericName> RankedNames;
     TMaybe<size_t> NameHintLength;
     ...
-  };
-
-  class INameService: public TThrRefBase {
-  ...
-    virtual NThreading::TFuture<TNameResponse>
-    Lookup(TNameRequest request) const = 0;
   };
   ```,
   caption: "Интерфейс сервиса имен",
