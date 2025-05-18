@@ -56,7 +56,7 @@
 #structural-element("Содержание", outlined: false)
 #outline(title: none)
 
-#structural-element("Cписок сокращений и условных обозначений")
+#structural-element("Список терминов и сокращений")
 
 #term([БД], [база данных])
 
@@ -81,8 +81,6 @@
 #term([ATN], [augmented transition network (расширенная сеть переходов)])
 
 #term([RPC], [remote procedure call (удалённый вызов процедур)])
-
-#structural-element("Термины и определения")
 
 #term(
   [SQL],
