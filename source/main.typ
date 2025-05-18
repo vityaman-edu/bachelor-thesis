@@ -175,31 +175,29 @@ ANTLR является инструментом для разработки гр
 Он имеет свой формат для описания грамматик (расширение `.g4` в 4-м поколении). @yql-grammar-fragment показывает фрагменты ANTLR грамматики языка YQL.
 
 #figure(
-  [
-    ```g4
-    ...
-    sql_stmt_core
-      : pragma_stmt
-      | select_stmt
-      | named_nodes_stmt
-      | create_table_stmt
-      | drop_table_stmt
-      | use_stmt
-    ...
-    select_core
-      : (FROM join_source)?
-        SELECT STREAM? ... (COMMA result_column)* COMMA?
-        (WITHOUT (IF EXISTS)? without_column_list)?
-        (FROM join_source)? (WHERE expr)?
-        group_by_clause? (HAVING expr)?
-        window_clause? ext_order_by_clause?
-      ;
-    ...
-    fragment ID_QUOTED_CORE: '\\' . | '``' | ~('`' | '\\');
-    ID_QUOTED: BACKTICK ID_QUOTED_CORE* BACKTICK;
-    ...
-    ```
-  ],
+  ```g4
+  ...
+  sql_stmt_core
+    : pragma_stmt
+    | select_stmt
+    | named_nodes_stmt
+    | create_table_stmt
+    | drop_table_stmt
+    | use_stmt
+  ...
+  select_core
+    : (FROM join_source)?
+      SELECT STREAM? ... (COMMA result_column)* COMMA?
+      (WITHOUT (IF EXISTS)? without_column_list)?
+      (FROM join_source)? (WHERE expr)?
+      group_by_clause? (HAVING expr)?
+      window_clause? ext_order_by_clause?
+    ;
+  ...
+  fragment ID_QUOTED_CORE: '\\' . | '``' | ~('`' | '\\');
+  ID_QUOTED: BACKTICK ID_QUOTED_CORE* BACKTICK;
+  ...
+  ```,
   caption: "Фрагменты грамматики YQL в формате ANTLR",
 ) <yql-grammar-fragment>
 
@@ -210,11 +208,9 @@ ANTLR является инструментом для разработки гр
 Для выбора альтернативы в процессе синтаксического анализа ANTLR использует представление грамматики в виде ATN (Augmented Transition Network) @woods-atn @parr-allstar. ANTLR4 предоставляет возможность получить ATN через публичный интерфейс, что позволяет анализировать его программно и реализовывать различные функции, параметризуемые заданным языком (в версии ANTLR3 такой возможности не было, поэтому приходилось разбирать грамматику своими силами). Одной из таких библиотек является antlr4-c3, речь о которой и пойдет в следующем разделе. Графическое представление ATN для правила `cluster_expr` (@cluster-expr-grammar), построенное при помощи расширения ANTLR для среды VSCode, представлено на рисунке (@cluster-expr-atn).
 
 #figure(
-  [
-    ```g4
-    cluster_expr: (an_id COLON)? (pure_column_or_named | ASTERISK);
-    ```
-  ],
+  ```g4
+  cluster_expr: (an_id COLON)? (pure_column_or_named | ASTERISK);
+  ```,
   caption: "Опредление правила cluster_expr в грамматике YQL",
 ) <cluster-expr-grammar>
 
@@ -230,31 +226,29 @@ ANTLR является инструментом для разработки гр
 Библиотека antlr4-c3 построена на основе инфраструктуры ANTLR4 и предоставляет интерфейс, позволяющий в заданной позиции курсора в тексте запроса получить множество кандидатов на автодополнение @mike-antlr4-c3 @fernando-antlr4-c3 @tomassetti-antlr4-c3. @antlr4-c3-api демонстрирует С++ интерфейс библиотеки.
 
 #figure(
-  [
-    ```cpp
-    ...
-    struct CandidatesCollection {
-      std::map<size_t, TokenList> tokens;
-      std::map<size_t, CandidateRule> rules;
-    ...
-    };
-    ...
-    class CodeCompletionCore {
-    ...
-    public:
-      explicit CodeCompletionCore(antlr4::Parser* parser);
-    ...
-      std::unordered_set<size_t> ignoredTokens;
-    ...
-      std::unordered_set<size_t> preferredRules;
-    ...
-      CandidatesCollection collectCandidates(
-        size_t caretTokenIndex, ...);
-    ...
-    };
-    ...
-    ```
-  ],
+  ```cpp
+  ...
+  struct CandidatesCollection {
+    std::map<size_t, TokenList> tokens;
+    std::map<size_t, CandidateRule> rules;
+  ...
+  };
+  ...
+  class CodeCompletionCore {
+  ...
+  public:
+    explicit CodeCompletionCore(antlr4::Parser* parser);
+  ...
+    std::unordered_set<size_t> ignoredTokens;
+  ...
+    std::unordered_set<size_t> preferredRules;
+  ...
+    CandidatesCollection collectCandidates(
+      size_t caretTokenIndex, ...);
+  ...
+  };
+  ...
+  ```,
   caption: "Интерфейс библиотеки antlr4-c3",
 ) <antlr4-c3-api>
 
@@ -273,32 +267,30 @@ ANTLR является инструментом для разработки гр
 Автодополнение YQL реализовано в приложении YDB Embedded UI. Так как это Web-приложение, оно реализовано на TypeScript. Анализ SQL-запросов предоставлен библиотекой `gravity-ui/websql-autocomplete`. Данная библиотека позволяет по тексту запроса и позиции курсора в нем получить информацию о локальном для курсора контексте. Реализация базируется на ANTLR4 и antlr4-c3. @websql-autocomplete-api демонстрирует структуру результата работы данной библиотеки. Заметим, что, кроме некоторой локальной для курсора информации, возвращается также список таблиц, участвующих в объединении для автодополнения колонок, то есть осуществляется анализ всего запроса путем анализа дерева конкретного синтаксиса.
 
 #figure(
-  [
-    ```ts
-    ...
-    export interface TableContextSuggestion {
-      tables?: Table[];
-    }
+  ```ts
+  ...
+  export interface TableContextSuggestion {
+    tables?: Table[];
+  }
 
-    export type ColumnSuggestion = TableContextSuggestion;
-    ...
-    export type YQLColumnsSuggestion = ColumnSuggestion & ...;
-    ...
-    export interface YqlAutocompleteResult extends ... {
-      suggestTableIndexes?: TableIndexSuggestion;
-      suggestEntity?: YQLEntity[];
-      suggestSimpleTypes?: boolean;
-      suggestUdfs?: boolean;
-      suggestWindowFunctions?: boolean;
-      suggestTableFunctions?: boolean;
-      suggestPragmas?: boolean;
-      suggestTableHints?: string;
-      suggestEntitySettings?: YQLEntity;
-      suggestColumns?: YQLColumnsSuggestion;
-      suggestVariables?: VariableSuggestion[];
-    };
-    ```
-  ],
+  export type ColumnSuggestion = TableContextSuggestion;
+  ...
+  export type YQLColumnsSuggestion = ColumnSuggestion & ...;
+  ...
+  export interface YqlAutocompleteResult extends ... {
+    suggestTableIndexes?: TableIndexSuggestion;
+    suggestEntity?: YQLEntity[];
+    suggestSimpleTypes?: boolean;
+    suggestUdfs?: boolean;
+    suggestWindowFunctions?: boolean;
+    suggestTableFunctions?: boolean;
+    suggestPragmas?: boolean;
+    suggestTableHints?: string;
+    suggestEntitySettings?: YQLEntity;
+    suggestColumns?: YQLColumnsSuggestion;
+    suggestVariables?: VariableSuggestion[];
+  };
+  ```,
   caption: "Результат работы websql-autocomplete",
 ) <websql-autocomplete-api>
 
@@ -307,21 +299,19 @@ ANTLR является инструментом для разработки гр
 Для СУБД Postgres также есть консольный клиент, называемый psql. Для построения интерактивного CLI там используется библиотека GNU Readline, решение реализовано на языке C. Автодополнение также реализовано и поддерживает автодополнение как ключевых слов, так и различных имен, причем контекстно-зависимо. Реализуется это путем сопоставления с образцом начала и конца запроса, для этого подготовлены специальные макросы (@psql-pattern-matching-macro). Решение располагается в файле `postgres/src/bin/psql/tab-complete.c` и занимает более 5 тысяч строк кода, из которых большая часть -- перечисление подобных правил для каждого фрагмента грамматики. Такой код сложно поддерживать, так как при изменении грамматики требуется внести изменения и в реализацию автодополнения. Содержимое `tab-complete.c` по сути дублирует знание о грамматике языка.
 
 #figure(
-  [
-    ```c
-    ...
-    /* ALTER DOMAIN <sth> DROP */
-    else if (Matches("ALTER", "DOMAIN", MatchAny, "DROP"))
-      COMPLETE_WITH("CONSTRAINT", "DEFAULT", "NOT NULL");
-    /* ALTER DOMAIN <sth> DROP|RENAME|VALIDATE CONSTRAINT */
-    else if (Matches("ALTER", "DOMAIN", MatchAny, "DROP|RENAME..."))
-    {
-      set_completion_reference(prev3_wd);
-      COMPLETE_WITH_SCHEMA_QUERY(Query_for_constraint_of_type);
-    }
-    ...
-    ```
-  ],
+  ```c
+  ...
+  /* ALTER DOMAIN <sth> DROP */
+  else if (Matches("ALTER", "DOMAIN", MatchAny, "DROP"))
+    COMPLETE_WITH("CONSTRAINT", "DEFAULT", "NOT NULL");
+  /* ALTER DOMAIN <sth> DROP|RENAME|VALIDATE CONSTRAINT */
+  else if (Matches("ALTER", "DOMAIN", MatchAny, "DROP|RENAME..."))
+  {
+    set_completion_reference(prev3_wd);
+    COMPLETE_WITH_SCHEMA_QUERY(Query_for_constraint_of_type);
+  }
+  ...
+  ```,
   caption: "Фрагмент реализации автодополнения в psql",
 ) <psql-pattern-matching-macro>
 
@@ -375,30 +365,28 @@ ANTLR является инструментом для разработки гр
 Компонент `SqlCompletionEngine` (@sql-complete-cpp) является точкой входа в модуль, представлен в виде одноименного класса и структур для передачи параметров и результатов. Он имеет асинхронный интерфейс, так как потенциально осуществляет RPC. Вместе с кандидатами на автодополнение также возвращается информация о редактируемом отрезке текста для интеграции со средой разработки.
 
 #figure(
-  [
-    ```cpp
-    struct TCompletedToken {
-      TStringBuf Content;
-      size_t SourcePosition;
-    };
+  ```cpp
+  struct TCompletedToken {
+    TStringBuf Content;
+    size_t SourcePosition;
+  };
 
-    struct TCandidate {
-      ECandidateKind Kind;
-      TString Content;
-    };
+  struct TCandidate {
+    ECandidateKind Kind;
+    TString Content;
+  };
 
-    struct TCompletion {
-      TCompletedToken CompletedToken;
-      TVector<TCandidate> Candidates;
-    };
+  struct TCompletion {
+    TCompletedToken CompletedToken;
+    TVector<TCandidate> Candidates;
+  };
 
-    class ISqlCompletionEngine {
-      ...
-      virtual NThreading::TFuture<TCompletion>
-      Complete(TCompletionInput input) = 0;
-    };
-    ```
-  ],
+  class ISqlCompletionEngine {
+    ...
+    virtual NThreading::TFuture<TCompletion>
+    Complete(TCompletionInput input) = 0;
+  };
+  ```,
   caption: "Интерфейс ISqlCompletionEngine",
 ) <sql-complete-cpp>
 
@@ -407,28 +395,26 @@ ANTLR является инструментом для разработки гр
 Естественно, для модуля автодополнения необходимо анализировать запрос. Во-первых, необходимо в некотором роде понимать, где находится курсор в запросе, какие выражения языка могут быть представлены в данной позиции. Данную проблему решает локальный анализ (`LocalAnalysis`). Во-вторых, запрос на YQL может быть большой, состоящий из нескольких действий. Например, в запросе могут быть создания объектов БД, которые пользователь будет ожидать в списке кандидатов еще до того, как запрос будет выполнен, определения именованых выражений и прочее. Также полезно выводить типы выражений, например, для фильтрации кандидатов в аргументы функций, выводить схему таблицы при работе с подзапросами и другое. Эти задачи должен будет решать глобальный анализ (`GlobalAnalysis`). Оба компонента являются реализованы средствами ANTLR4. Локальный анализ использует antlr4-c3.
 
 #figure(
-  [
-    ```
-    .
-    ├── antlr4
-    ├── core
-    ├── name
-    │   ├── cluster
-    │   │   └── static
-    │   ├── object
-    │   │   ├── dispatch
-    │   │   └── simple
-    │   │       └── static
-    │   └── service
-    │       ├── cluster
-    │       ├── ranking
-    │       ├── schema
-    │       ├── static
-    │       └── union
-    ├── syntax
-    └── text
-    ```
-  ],
+  ```
+  .
+  ├── antlr4
+  ├── core
+  ├── name
+  │   ├── cluster
+  │   │   └── static
+  │   ├── object
+  │   │   ├── dispatch
+  │   │   └── simple
+  │   │       └── static
+  │   └── service
+  │       ├── cluster
+  │       ├── ranking
+  │       ├── schema
+  │       ├── static
+  │       └── union
+  ├── syntax
+  └── text
+  ```,
   caption: "Дерево директорий модуля автодополнения",
 ) <module-yamake-tree>
 
@@ -441,40 +427,38 @@ ANTLR является инструментом для разработки гр
 Компонент для локального анализа запроса является внутренним и не предполагается быть использованным клиентом модуля автодополнения. Он принимает на вход текст запроса и позицию курсора в нем, а возвращает информацию о подходящих по контексту типах кандидатов на автодополнение вместе с некоторой дополнительной информацией и еще диапазон редактирумого текста для интеграции со средой разработки. Дополнительной информацией может послужить, например, пространство имен UDF. @syntax-local-cpp показывает, как выглядит интерфейс данного компонента.
 
 #figure(
-  [
-    ```cpp
-    struct TLocalSyntaxContext {
-      using TKeywords = THashMap<TString, TVector<TString>>;
+  ```cpp
+  struct TLocalSyntaxContext {
+    using TKeywords = THashMap<TString, TVector<TString>>;
 
-      struct TPragma {
-        TString Namespace;
-      };
-      ...
-      struct TObject {
-        TString Provider;
-        TString Cluster;
-        TString Path;
-        THashSet<EObjectKind> Kinds;
-        bool IsEnclosed = false;
-      };
-
-      TKeywords Keywords;
-      TMaybe<TPragma> Pragma;
-      bool Type = false;
-      TMaybe<TFunction> Function;
-      TMaybe<THint> Hint;
-      TMaybe<TObject> Object;
-      TMaybe<TCluster> Cluster;
-      TEditRange EditRange;
+    struct TPragma {
+      TString Namespace;
     };
-
-    class ILocalSyntaxAnalysis {
     ...
-        virtual TLocalSyntaxContext
-        Analyze(TCompletionInput input) = 0;
+    struct TObject {
+      TString Provider;
+      TString Cluster;
+      TString Path;
+      THashSet<EObjectKind> Kinds;
+      bool IsEnclosed = false;
     };
-    ```
-  ],
+
+    TKeywords Keywords;
+    TMaybe<TPragma> Pragma;
+    bool Type = false;
+    TMaybe<TFunction> Function;
+    TMaybe<THint> Hint;
+    TMaybe<TObject> Object;
+    TMaybe<TCluster> Cluster;
+    TEditRange EditRange;
+  };
+
+  class ILocalSyntaxAnalysis {
+  ...
+      virtual TLocalSyntaxContext
+      Analyze(TCompletionInput input) = 0;
+  };
+  ```,
   caption: "Интерфейс локального анализа запроса",
 ) <syntax-local-cpp>
 
@@ -495,48 +479,44 @@ ANTLR является инструментом для разработки гр
 Первая проблема -- наличие ключевых слов на позициях имен в результате работы antlr4-c3. Дело в том, что в SQL позволено с некоторыми ограничениями использовать ключевые слова в качестве идентификаторов. Для этого в грамматике языка есть специальные продукции (@yql-grammar-id-table). Для решения данной проблемы необходимо было настроить игнорирование данных правил в antlr4-c3.
 
 #figure(
-  [
-    ```g4
-    id_table
-      : identifier
-      | keyword_compat
-      | keyword_expr_uncompat
-      | keyword_select_uncompat
-      ...
+  ```g4
+  id_table
+    : identifier
+    | keyword_compat
+    | keyword_expr_uncompat
+    | keyword_select_uncompat
+    ...
 
-    keyword_compat
-      : ABORT
-      | ACTION
-      | ADD
-      | AFTER
-      ...
-    ```
-  ],
+  keyword_compat
+    : ABORT
+    | ACTION
+    | ADD
+    | AFTER
+    ...
+  ```,
   caption: "Именя таблицы в грамматике YQL",
 ) <yql-grammar-id-table>
 
 Вторая проблема -- форматирование ключевых слов. Хоть ключевые слова YQL принято записывать в верхнем регистре, однако есть исключение. Конструкторы типов являются ключевыми словами и имеют особенный синтаксис, потому выражены отдельными правилами в грамматике (@yql-grammar-type-name-composite). Для решения данной проблемы было добавлено эвристическое правило, трансформирующее ключевое слово из списка ключевых слов конструкторов типов в CamelCase, если за ним следует символ '(' или '<'. Обращу внимание на то, что проверка следующего слова необходима ввиду существования типа `Set`, лексема которого может использваться в контексте команды UPDATE.
 
 #figure(
-  [
-    ```g4
+  ```g4
+  ...
+  type_name_variant
+    : VARIANT LESS
+      variant_arg (COMMA variant_arg)* COMMA?
+      GREATER;
+  type_name_stream: STREAM LESS type_name_or_bind GREATER;
+  type_name_set: SET LESS type_name_or_bind GREATER;
+  type_name_resource: RESOURCE LESS type_name_tag GREATER;
+  ...
+  type_name_composite: (
+      type_name_optional
+    | type_name_tuple
+    | type_name_struct
     ...
-    type_name_variant
-      : VARIANT LESS
-        variant_arg (COMMA variant_arg)* COMMA?
-        GREATER;
-    type_name_stream: STREAM LESS type_name_or_bind GREATER;
-    type_name_set: SET LESS type_name_or_bind GREATER;
-    type_name_resource: RESOURCE LESS type_name_tag GREATER;
-    ...
-    type_name_composite: (
-        type_name_optional
-      | type_name_tuple
-      | type_name_struct
-      ...
-    ) QUESTION*;
-    ```
-  ],
+  ) QUESTION*;
+  ```,
   caption: "Конструкторы типов в грамматике YQL",
 ) <yql-grammar-type-name-composite>
 
@@ -549,50 +529,46 @@ ANTLR является инструментом для разработки гр
 Для определения типа идентификатора может использоваться стек вызовов парсера, который можно получить через antlr4-c3, так как грамматика обладает подходящей структурой правил. Пример правила для определения типа идентификатора по стеку вызовов парсера приведен на листинге (@parser-call-stack-cpp).
 
 #figure(
-  [
-    ```cpp
-    bool IsLikelyExistingTableStack(const TParserCallStack& stack) {
-      const bool isExisting = !Contains({
-        RULE(Create_table_stmt),
-        RULE(Simple_table_ref)}, stack);
+  ```cpp
+  bool IsLikelyExistingTableStack(const TParserCallStack& stack) {
+    const bool isExisting = !Contains({
+      RULE(Create_table_stmt),
+      RULE(Simple_table_ref)}, stack);
 
-      return isExisting && (
-        Contains({
-          RULE(Simple_table_ref),
-          RULE(Simple_table_ref_core),
-          RULE(Object_ref)
-        }, stack) || Contains({
-          RULE(Single_source),
-          RULE(Table_ref),
-          RULE(Table_key),
-          RULE(Id_table_or_type)
-        }, stack)
-      );
-    }
-    ```
-  ],
+    return isExisting && (
+      Contains({
+        RULE(Simple_table_ref),
+        RULE(Simple_table_ref_core),
+        RULE(Object_ref)
+      }, stack) || Contains({
+        RULE(Single_source),
+        RULE(Table_ref),
+        RULE(Table_key),
+        RULE(Id_table_or_type)
+      }, stack)
+    );
+  }
+  ```,
   caption: "Определение типа идентификатора по стеку вызовов парсера",
 ) <parser-call-stack-cpp>
 
 Пространство имен можно достаточно просто выделить, прибегнув к анализу предшествующих курсору лексем, подобного используемому в psql. Пример такого выделения приведен на листинге (@syntax-local-cpp-namespace). Такой подход очень удобен, но не следует им злоупотреблять, так как описанные правила по сути являются эвристическими и могут стать неактуальными при изменении грамматики языка. Гораздо лучше для таких целей анализировать то самое старое дерево синтаксиса, в десять раз толще и в два раза выше каждой другой структуры данных, с которой мы были согласны, но теперь уже имеющее молодые листья-лексемы.
 
 #figure(
-  [
-    ```cpp
-    if (TMaybe<TRichParsedToken> begin;
-      (begin = context.MatchCursorPrefix({"ID_PLAIN", "DOT"})) ||
-      (begin = context.MatchCursorPrefix({"ID_PLAIN", "DOT", ""}))) {
-      object.Cluster = begin->Base->Content;
-    }
-    if (TMaybe<TRichParsedToken> begin;
-      (begin = context.MatchCursorPrefix(
-        {"ID_PLAIN", "COLON", "ID_PLAIN", "DOT"})) ||
-      (begin = context.MatchCursorPrefix(
-        {"ID_PLAIN", "COLON", "ID_PLAIN", "DOT", ""}))) {
-      object.Provider = begin->Base->Content;
-    }
-    ```
-  ],
+  ```cpp
+  if (TMaybe<TRichParsedToken> begin;
+    (begin = context.MatchCursorPrefix({"ID_PLAIN", "DOT"})) ||
+    (begin = context.MatchCursorPrefix({"ID_PLAIN", "DOT", ""}))) {
+    object.Cluster = begin->Base->Content;
+  }
+  if (TMaybe<TRichParsedToken> begin;
+    (begin = context.MatchCursorPrefix(
+      {"ID_PLAIN", "COLON", "ID_PLAIN", "DOT"})) ||
+    (begin = context.MatchCursorPrefix(
+      {"ID_PLAIN", "COLON", "ID_PLAIN", "DOT", ""}))) {
+    object.Provider = begin->Base->Content;
+  }
+  ```,
   caption: "Сопоставление с образцом на списке лексем",
 ) <syntax-local-cpp-namespace>
 
@@ -619,45 +595,43 @@ ANTLR является инструментом для разработки гр
 Фрагмент программного кода, задающий интерфейс, удовлетворяющий перечисленным требованиям, представлен на листинге (@name-service-api).
 
 #figure(
-  [
-    ```cpp
-    struct TObjectNameConstraints {
-      TString Provider;
-      TString Cluster;
-      THashSet<EObjectKind> Kinds;
-    };
+  ```cpp
+  struct TObjectNameConstraints {
+    TString Provider;
+    TString Cluster;
+    THashSet<EObjectKind> Kinds;
+  };
+  ...
+  using TGenericName = std::variant<
+    TKeyword,
+    TPragmaName,
+    ...>;
+
+  struct TNameConstraints {
+    TMaybe<TObjectNameConstraints> Object;
     ...
-    using TGenericName = std::variant<
-      TKeyword,
-      TPragmaName,
-      ...>;
+  };
 
-    struct TNameConstraints {
-      TMaybe<TObjectNameConstraints> Object;
-      ...
-    };
-
-    struct TNameRequest {
-      TVector<TString> Keywords;
-      TNameConstraints Constraints;
-      TString Prefix = "";
-      size_t Limit = 128;
-      ...
-    };
-
-    struct TNameResponse {
-      TVector<TGenericName> RankedNames;
-      TMaybe<size_t> NameHintLength;
-      ...
-    };
-
-    class INameService: public TThrRefBase {
+  struct TNameRequest {
+    TVector<TString> Keywords;
+    TNameConstraints Constraints;
+    TString Prefix = "";
+    size_t Limit = 128;
     ...
-      virtual NThreading::TFuture<TNameResponse>
-      Lookup(TNameRequest request) const = 0;
-    };
-    ```
-  ],
+  };
+
+  struct TNameResponse {
+    TVector<TGenericName> RankedNames;
+    TMaybe<size_t> NameHintLength;
+    ...
+  };
+
+  class INameService: public TThrRefBase {
+  ...
+    virtual NThreading::TFuture<TNameResponse>
+    Lookup(TNameRequest request) const = 0;
+  };
+  ```,
   caption: "Интерфейс сервиса имен",
 ) <name-service-api>
 
@@ -668,99 +642,87 @@ ANTLR является инструментом для разработки гр
 Разработчиками проекта YQL мне было предоставлено множество встроенных имен, оснащенные также дополнительной информацией. Множество представлено в файлах формата JSON, которые генерируются автоматически.
 
 #figure(
+  ```json
   [
-    ```json
-    [
-      {"name": "yt.Annotations"},
-      {"name":"yt.ApplyStoredConstraints"},
-      ...
-    ]
-    ```
-  ],
+    {"name": "yt.Annotations"},
+    {"name":"yt.ApplyStoredConstraints"},
+    ...
+  ]
+  ```,
   caption: "Фрагмент JSON-описания прагм",
 ) <language-data-pragmas-opensource>
 
 @language-data-pragmas-opensource показывает список прагм. Заметим, что они как раз имеют пространство имен, что и требовало специальной обработки на этапе локального анализа запроса и передачи дополнительного ограничения в запросе к сервису имен.
 
 #figure(
+  ```json
   [
-    ```json
-    [
-      {"name":"Abs","kind":"Normal"},
-      {"name":"AdaptiveDistanceHistogram","kind":"Agg"},
-      ...
-      {"name":"CumeDist","kind":"Window"},
-      ...
-    ]
-    ```
-  ],
+    {"name":"Abs","kind":"Normal"},
+    {"name":"AdaptiveDistanceHistogram","kind":"Agg"},
+    ...
+    {"name":"CumeDist","kind":"Window"},
+    ...
+  ]
+  ```,
   caption: "Фрагмент JSON-описания встроенных функций",
 ) <language-data-sql-functions>
 
 #figure(
-  [
-    ```json
-    {
-      "DateTime": [
-        {"name":"Convert"},
-        ...
-      ],
+  ```json
+  {
+    "DateTime": [
+      {"name":"Convert"},
       ...
-    }
-    ```
-  ],
+    ],
+    ...
+  }
+  ```,
   caption: "Фрагмент JSON-описания пользовательских функций",
 ) <language-data-udfs-basic>
 
 @language-data-sql-functions и @language-data-udfs-basic демонстрируют множества функций. Видно, что они имеют разные типы, определяющие контекст применимости. Например, агрегатные функции могут быть применены только к колонкам, не входящим в ключ группировки, что может быть использовано для фильтрации кандидатов в аргументы таких функций. Также в будущем представляется возможным оснащение их сигнатурами для фильтрации кандидатов в аргументы по типу.
 
 #figure(
-  [
-    ```json
-    {
-      "read": {"yt": {"hints": [
-        {"name":"infer_scheme"},
-        ...
-      ]}},
-      "insert": {"yt": {"hints": [
-        {"name":"truncate"},
-        ...
-      ]}}
-    }
-    ```
-  ],
+  ```json
+  {
+    "read": {"yt": {"hints": [
+      {"name":"infer_scheme"},
+      ...
+    ]}},
+    "insert": {"yt": {"hints": [
+      {"name":"truncate"},
+      ...
+    ]}}
+  }
+  ```,
   caption: "Фрагмент JSON-описания параметров действий",
 ) <language-data-statements-opensource>
 
 YQL позволяет задать СУБД некоторые параметры совершаемых действий, @language-data-statements-opensource их перечисляет. Например, можно взять блокировку на таблицу (`XLOCK`). Их множество зависит от целевой системы и от типа действия (например, чтение или запись), что требует вывода данного ограничения в процессе локального анализа запроса.
 
 #figure(
+  ```json
   [
-    ```json
-    [
-      {"name":"Bool","kind":"Data"},
-      ...
-    ]
-    ```
-  ],
+    {"name":"Bool","kind":"Data"},
+    ...
+  ]
+  ```,
   caption: "Фрагмент JSON-описания типов данных",
 ) <language-data-types>
 
 Эти ресурсы можно встроить в бинарный файл библиотеки, в форме которой поставляется модуль автодополнения. Программно производить разбор и загрузку в специальные структуры данных для более эффективного поиска. На выходе получается следующий объект (@name-set-cpp).
 
 #figure(
-  [
-    ```cpp
-    struct TNameSet {
-      TVector<TString> Pragmas;
-      TVector<TString> Types;
-      TVector<TString> Functions;
-      THashMap<EStatementKind, TVector<TString>> Hints;
-    };
+  ```cpp
+  struct TNameSet {
+    TVector<TString> Pragmas;
+    TVector<TString> Types;
+    TVector<TString> Functions;
+    THashMap<EStatementKind, TVector<TString>> Hints;
+  };
 
-    TNameSet Pruned(TNameSet names, const TFrequencyData& frequency);
-    ```
-  ],
+  TNameSet Pruned(TNameSet names, const TFrequencyData& frequency);
+  ```,
   caption: "Программное представление множества имен",
 ) <name-set-cpp>
 
@@ -769,51 +731,47 @@ YQL позволяет задать СУБД некоторые параметр
 Далее по заданным именам строятся индексы для быстрой фильтрации по префиксу. Индекс представляет из себя просто массив отсортированных строк. По нему можно с вычислительной сложностью $O(log n)$ получать все строки, начинающиеся с заданной. Идея была позаимствована в ClickHouse CLI. Конечно же, в индексе хранятся нормализованные строки вместе с их оригинальным написанием. Для поиска необходимо нормализовать префикс (часть слова, которую пользователь успел напечатать), найти индексы начала и конца интервала подходящих строк и посканировать его, выписывая оригинальные написания в качестве ответа. Простое и достаточно эффективное решение.
 
 #figure(
-  [
-    ```cpp
-    struct TNameIndexEntry {
-      TString Normalized;
-      TString Original;
-    };
+  ```cpp
+  struct TNameIndexEntry {
+    TString Normalized;
+    TString Original;
+  };
 
-    using TNameIndex = TVector<TNameIndexEntry>;
+  using TNameIndex = TVector<TNameIndexEntry>;
 
-    ...
+  ...
 
-    TNameIndex BuildNameIndex(TVector<TString> originals, auto normalize) {
-      TNameIndex index;
-      for (auto& original : originals)
-        ...
-      Sort(index, NameIndexCompare);
-      return index;
-    }
-    ```
-  ],
+  TNameIndex BuildNameIndex(TVector<TString> originals, auto normalize) {
+    TNameIndex index;
+    for (auto& original : originals)
+      ...
+    Sort(index, NameIndexCompare);
+    return index;
+  }
+  ```,
   caption: "Построение индекса для поиска имен",
 ) <name-index-cpp>
 
 При наличии поискового индекса и алгоритма ранжирования не составляет труда реализовать сервисы имен для каждого типа встроенных имен (@pragma-name-service-cpp). Для удобства реализации типовых сервисов встроенных имен был подготовлен вспомогательный класс `IRankingNameService`, упрощающий реализацию метода `Lookup`, забирая на себя отвественность за ранжирование.
 
 #figure(
-  [
-    ```cpp
-    class TPragmaNameService: public IRankingNameService {
-    ...
-      NThreading::TFuture<TNameResponse>
-      LookupAllUnranked(TNameRequest request) const override {
-        ...
-        if (request.Constraints.Pragma) {
-          NameIndexScan<TPragmaName>(
-            Pragmas_,
-            request.Prefix,
-            request.Constraints,
-            response.RankedNames);
-        }
-        ...
+  ```cpp
+  class TPragmaNameService: public IRankingNameService {
+  ...
+    NThreading::TFuture<TNameResponse>
+    LookupAllUnranked(TNameRequest request) const override {
+      ...
+      if (request.Constraints.Pragma) {
+        NameIndexScan<TPragmaName>(
+          Pragmas_,
+          request.Prefix,
+          request.Constraints,
+          response.RankedNames);
       }
-    };
-    ```
-  ],
+      ...
+    }
+  };
+  ```,
   caption: "Пример реализации сервиса имен для прагм",
 ) <pragma-name-service-cpp>
 
@@ -822,22 +780,20 @@ YQL позволяет задать СУБД некоторые параметр
 Изначально данный декоратор был необходим для объединения статических и динамических сервисов, однако нашел применение и для декомпозиции статического сервиса. Под динамическими сервисами я понимаю те, которые в процессе работы выполняют вызовы удаленных процедур. Во многом благодаря этому компоненту получилась достаточно модульная и гибко настраиваемая система сервисов имен (@name-service-eo).
 
 #figure(
-  [
-    ```cpp
-    return MakeUnionNameService({
-      MakeStaticNameService(std::move(names), frequency),
-      MakeSchemaNameService(
-        MakeDispatchSchema({
-          {"...", MakeSimpleSchema(
-            MakeStaticSimpleSchema(...))},
-          {"...", MakeSimpleSchema(
-            MakeStaticSimpleSchema(...))}
-        })),
-      MakeClusterNameService(
-        MakeStaticClusterDiscovery(std::move(clusters))),
-    }, MakeDefaultRanking(frequency));
-    ```
-  ],
+  ```cpp
+  return MakeUnionNameService({
+    MakeStaticNameService(std::move(names), frequency),
+    MakeSchemaNameService(
+      MakeDispatchSchema({
+        {"...", MakeSimpleSchema(
+          MakeStaticSimpleSchema(...))},
+        {"...", MakeSimpleSchema(
+          MakeStaticSimpleSchema(...))}
+      })),
+    MakeClusterNameService(
+      MakeStaticClusterDiscovery(std::move(clusters))),
+  }, MakeDefaultRanking(frequency));
+  ```,
   caption: "Пример инициализации сервиса имен",
 ) <name-service-eo>
 
@@ -846,27 +802,25 @@ YQL позволяет задать СУБД некоторые параметр
 При реализации сервиса встроенных имен была также решена еще одна проблема. Проблема связана с пространствами имен. Чтобы лучше понять суть проблемы, необходимо ответить на вопрос, что должно быть в списке кандидатов в каждом из случаев `DataTi` и `DateTime::Spl`. Первый вариант: в обоих случаях должен быть `DateTime::Split`. Второй вариант: в первом случае -- `DateTime::Split`, а во втором случае -- `Split`. Третий вариант: в первом случае -- `DateTime`, а во втором случае -- `Split`. Мною был выбран второй вариант, так как, с одной стороны, казалось удобным не разделять пространства имен и имена заданного типа и хранить все функции в одном списке (индексе), в котором также иметь и базовые функции без пространств имен (например, `MaxBy`), а с другой стороны, определять редактируемый интервал проще всего, принимая текущую лексему (об этом подробнее в следующей главе). Из-за этого сервис имен выдает только имя без пространства имен, при наличии последнего в локальном контексте запроса, передаваемом в сервис имен. Для совместимости такой логики с индексами для фильтрации и ранжирования были введены функции (@name-qualified) для приведения имен в полный и сокращенный вид в зависимости от контекста использования.
 
 #figure(
-  [
-    ```cpp
-    TGenericName TNameConstraints::Qualified(TGenericName unqualified) const {
-      return std::visit([&](auto&& name) -> TGenericName {
-        using T = std::decay_t<decltype(name)>;
-        if constexpr (std::is_same_v<T, TPragmaName>) {
-          SetPrefix(name.Indentifier, ".", *Pragma);
-        } else if constexpr (std::is_same_v<T, TFunctionName>) {
-          SetPrefix(name.Indentifier, "::", *Function);
-        } else if constexpr (std::is_same_v<T, TClusterName>) {
-          SetPrefix(name.Indentifier, ":", *Cluster);
-        }
-        return name;
-      }, std::move(unqualified));
-    }
+  ```cpp
+  TGenericName TNameConstraints::Qualified(TGenericName unqualified) const {
+    return std::visit([&](auto&& name) -> TGenericName {
+      using T = std::decay_t<decltype(name)>;
+      if constexpr (std::is_same_v<T, TPragmaName>) {
+        SetPrefix(name.Indentifier, ".", *Pragma);
+      } else if constexpr (std::is_same_v<T, TFunctionName>) {
+        SetPrefix(name.Indentifier, "::", *Function);
+      } else if constexpr (std::is_same_v<T, TClusterName>) {
+        SetPrefix(name.Indentifier, ":", *Cluster);
+      }
+      return name;
+    }, std::move(unqualified));
+  }
 
-    TGenericName TNameConstraints::Unqualified(TGenericName qualified) const {
-      ...
-    }
-    ```
-  ],
+  TGenericName TNameConstraints::Unqualified(TGenericName qualified) const {
+    ...
+  }
+  ```,
   caption: "Методы транфсорфмации имени",
 ) <name-qualified>
 
@@ -875,55 +829,49 @@ YQL позволяет задать СУБД некоторые параметр
 Разработчиками проекта YQL была предоставлена информация о частотах использований имен. Представлена она также в виде одного большого JSON-файла, @rull-corr-freq является его фрагментом. Имена в данных намеренно не нормализованы, чтобы можно было выбрать наиболее популярное написание, о чем речь шла в предыдущем разделе.
 
 #figure(
+  ```json
   [
-    ```json
-    [
-      {"parent":"FUNC","rule":"ABC","sum":1},
-      {"parent":"TYPE","rule":"BIGINT","sum":7101},
-      {"parent":"KEYWORD","rule":"UNION","sum":65064443},
-      {"parent":"MODULE_FUNC","rule":"Compress::BZip2","sum":2},
-      {"parent":"MODULE","rule":"re2","sum":3094},
-      {"parent":"READ_HINT","rule":"COLUMNS","sum":826110},
-      {"parent":"INSERT_HINT","rule":"COLUMN_GROUPS","sum":225},
-    ]
-    ```
-  ],
+    {"parent":"FUNC","rule":"ABC","sum":1},
+    {"parent":"TYPE","rule":"BIGINT","sum":7101},
+    {"parent":"KEYWORD","rule":"UNION","sum":65064443},
+    {"parent":"MODULE_FUNC","rule":"Compress::BZip2","sum":2},
+    {"parent":"MODULE","rule":"re2","sum":3094},
+    {"parent":"READ_HINT","rule":"COLUMNS","sum":826110},
+    {"parent":"INSERT_HINT","rule":"COLUMN_GROUPS","sum":225},
+  ]
+  ```,
   caption: "Фрагмент JSON-описания частот использований",
 ) <rull-corr-freq>
 
 Данный файл, так же как и файлы со встроенными именами, включается в бинарный файл библиотеки, программно загружается, и по нему строится следующая структура данных (@frequency-cpp). Для ранжирования частоты эквивалентных имен сливаются и хранятся в нормализованном виде при помощи функции `Pruned`.
 
 #figure(
-  [
-    ```cpp
-    struct TFrequencyData {
-      THashMap<TString, size_t> Keywords;
-      THashMap<TString, size_t> Pragmas;
-      THashMap<TString, size_t> Types;
-      THashMap<TString, size_t> Functions;
-      THashMap<TString, size_t> Hints;
-    };
+  ```cpp
+  struct TFrequencyData {
+    THashMap<TString, size_t> Keywords;
+    THashMap<TString, size_t> Pragmas;
+    THashMap<TString, size_t> Types;
+    THashMap<TString, size_t> Functions;
+    THashMap<TString, size_t> Hints;
+  };
 
-    TFrequencyData Pruned(const TFrequencyData& data);
-    ```
-  ],
+  TFrequencyData Pruned(const TFrequencyData& data);
+  ```,
   caption: "Стурктура данных для хранения частот",
 ) <frequency-cpp>
 
 Информация о частотах является деталью реализации политики ранжирования кандидатов. В общем случае интерфейс выглядит следующим образом (@ranking-cpp).
 
 #figure(
-  [
-    ```cpp
-    class IRanking: public TThrRefBase {
-    ...
-      virtual void CropToSortedPrefix(
-        TVector<TGenericName>& names,
-        const TNameConstraints& constraints,
-        size_t limit) const = 0;
-    };
-    ```
-  ],
+  ```cpp
+  class IRanking: public TThrRefBase {
+  ...
+    virtual void CropToSortedPrefix(
+      TVector<TGenericName>& names,
+      const TNameConstraints& constraints,
+      size_t limit) const = 0;
+  };
+  ```,
   caption: "Интерфейс политики ранжирования",
 ) <ranking-cpp>
 
@@ -946,59 +894,55 @@ YQL позволяет задать СУБД некоторые параметр
 С точки зрения реализации разумно выделить схему БД в отдельный компонент, позволяющий получать содержимое директории по заданному пути и имени кластера. Интерфейс также должен поддерживать фильтрацию и ограничение размера ответа по тем же причинам, которые описаны в разделе про интерфейс сервиса имен. По описанным причинам интерфейс `Schema` выглядит следующим образом (@schema-cpp).
 
 #figure(
-  [
-    ```cpp
-    struct TFolderEntry {
-      ...
-      TString Type;
-      TString Name;
-      ...
-    };
-
-    struct TListFilter {
-      TMaybe<THashSet<TString>> Types;
-    };
-
-    struct TListRequest {
-        TString Cluster;
-        TString Path;
-        TListFilter Filter;
-        size_t Limit = 128;
-    };
-
-    struct TListResponse {
-      size_t NameHintLength = 0;
-      TVector<TFolderEntry> Entries;
-    };
-
-    class ISchema: public TThrRefBase {
+  ```cpp
+  struct TFolderEntry {
     ...
-        virtual NThreading::TFuture<TListResponse>
-        List(const TListRequest& request) const = 0;
-    };
-    ```
-  ],
+    TString Type;
+    TString Name;
+    ...
+  };
+
+  struct TListFilter {
+    TMaybe<THashSet<TString>> Types;
+  };
+
+  struct TListRequest {
+      TString Cluster;
+      TString Path;
+      TListFilter Filter;
+      size_t Limit = 128;
+  };
+
+  struct TListResponse {
+    size_t NameHintLength = 0;
+    TVector<TFolderEntry> Entries;
+  };
+
+  class ISchema: public TThrRefBase {
+  ...
+      virtual NThreading::TFuture<TListResponse>
+      List(const TListRequest& request) const = 0;
+  };
+  ```,
   caption: "Интерфейс доступа к схеме БД",
 ) <schema-cpp>
 
 На практике оказалось, что существующие интерфейсы для взаимодействия со схемой БД не поддерживают фильтрацию данных. Для упрощения реализации интерфейса для каждой системы был введен новый интерфейс `SimpleSchema` (@simple-schema-cpp), способный получить информацию о структуре пути, необходимую для модуля автодополнения, а также получить абсолютно все объекты БД по заданному пути. Также была добавлена реализация `Schema` через него, реализующая фильтрацию по умолчанию.
 
 #figure(
-  [
-    ```cpp
-    struct TSplittedPath {
-      TStringBuf Path;
-      TStringBuf NameHint;
-    };
+  ```cpp
+  struct TSplittedPath {
+    TStringBuf Path;
+    TStringBuf NameHint;
+  };
 
-    class ISimpleSchema: public TThrRefBase {
-    ...
-        virtual TSplittedPath Split(TStringBuf path) const = 0;
-        virtual NThreading::TFuture<TVector<TFolderEntry>>
-        List(TString folder) const = 0;
-    };
-    ```
-  ],
+  class ISimpleSchema: public TThrRefBase {
+  ...
+      virtual TSplittedPath Split(TStringBuf path) const = 0;
+      virtual NThreading::TFuture<TVector<TFolderEntry>>
+      List(TString folder) const = 0;
+  };
+  ```,
   caption: "Упрощенный интерфейс для доступа к схеме БД",
 ) <simple-schema-cpp>
 
@@ -1013,32 +957,28 @@ YQL позволяет задать СУБД некоторые параметр
 Библиотека Replxx, по средствам которой реализован интерактивный режим YDB CLI, предоставляет удобный интерфейс для внедрения автодополнения. Для этого необходимо зарегистрировать пользовательскую функцию, возвращающую список пар (слово, цвет) по заданному префиксу текста, из которого можно понять позицию курсора. Весь текст также можно получить. Кроме этого, есть возможность установки длины дополняемого слова, что полезно при замене имен, состоящих из нескольких лексем. Данных возможностей вполне достаточно для достижения высокого уровня пользовательского опыта (@ydb-cli-replxx). Для автодополнения по нажатию на клавишу TAB используется полная версия сервиса имен, загружающая имена объектов, а для подсказок, появляющихся налету по мере ввода текста, сервис имен выдает только ту информацию, которая не требует RPC, для снижения задержек.
 
 #figure(
-  [
-    ```cpp
-    Rx.set_completion_callback([this](... prefix, int& contextLen) {
-      return ApplyHeavy(Rx.get_state().text(), prefix, contextLen);
-    };
-    Rx.set_hint_callback([this](... prefix, int& contextLen, ...) {
-      return ApplyLight(Rx.get_state().text(), prefix, contextLen);
-    };
-    ```
-  ],
+  ```cpp
+  Rx.set_completion_callback([this](... prefix, int& contextLen) {
+    return ApplyHeavy(Rx.get_state().text(), prefix, contextLen);
+  };
+  Rx.set_hint_callback([this](... prefix, int& contextLen, ...) {
+    return ApplyLight(Rx.get_state().text(), prefix, contextLen);
+  };
+  ```,
   caption: "Конфигурация библиотеки Replxx в YDB CLI",
 ) <ydb-cli-replxx>
 
 Для автодополнения имен объектов БД было просто реализовать интерфейс `SimpleSchema` (@ydb-simple-schema-cpp) при помощи клиента из YDB C++ SDK.
 
 #figure(
-  [
-    ```cpp
-    NThreading::TFuture<TVector<NSQLComplete::TFolderEntry>>
-    List(TString folder) const override {
-      return NScheme::TSchemeClient(Driver_)
-        .ListDirectory(Qualified(folder))
-        .Apply(Convert(std::move(folder)));
-    }
-    ```
-  ],
+  ```cpp
+  NThreading::TFuture<TVector<NSQLComplete::TFolderEntry>>
+  List(TString folder) const override {
+    return NScheme::TSchemeClient(Driver_)
+      .ListDirectory(Qualified(folder))
+      .Apply(Convert(std::move(folder)));
+  }
+  ```,
   caption: "Получение имен объектов в YDB CLI",
 ) <ydb-simple-schema-cpp>
 
@@ -1062,65 +1002,59 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
 Для проведения измерений были выбраны два YQL запроса (@experiment-select и @experiment-create) и реализована симуляция работы пользователя (@experiment-simulation). Select-запрос выбран так, чтобы продемонстрировать не только сильные стороны текущей реализации (поддержка имен объектов, типов, функций), но и недостатки в виде отсутствия на момент написания ВКР автодополнения имен колонок. Естественно, данный будет исправлен в будущем. На Create-запросе, скорее всего, будет достигнут почти наилучший результат без использования генеративных моделей машинного обучения. Единственное улучшение там -- подсказка имени колонки текущей таблицы в `PRIMARY KEY`.
 
 #figure(
-  [
-    ```sql
-    SELECT
-      Re2::Capture("a.*")(sa.title),
-      CAST(sr.series_id AS Uint64),
-      sa.season_id
-    FROM yt:saurus.`/maxim/seasons` AS sa
-    INNER JOIN `/test/service/series` AS sr
-    ON sa.series_id = sr.series_id
-    WHERE sa.series_id = 1;
-    ```
-  ],
+  ```sql
+  SELECT
+    Re2::Capture("a.*")(sa.title),
+    CAST(sr.series_id AS Uint64),
+    sa.season_id
+  FROM yt:saurus.`/maxim/seasons` AS sa
+  INNER JOIN `/test/service/series` AS sr
+  ON sa.series_id = sr.series_id
+  WHERE sa.series_id = 1;
+  ```,
   caption: "Select-запрос для оценки метрики KS",
 ) <experiment-select>
 
 #figure(
-  [
-    ```sql
-    CREATE TABLE `/test/service/series` (
-      series_id Uint64,
-      title Utf8,
-      series_info Utf8,
-      release_date Uint64,
-      PRIMARY KEY (series_id)
-    );
-    ```
-  ],
+  ```sql
+  CREATE TABLE `/test/service/series` (
+    series_id Uint64,
+    title Utf8,
+    series_info Utf8,
+    release_date Uint64,
+    PRIMARY KEY (series_id)
+  );
+  ```,
   caption: "Create-запрос для оценки метрики KS",
 ) <experiment-create>
 
 #figure(
-  [
-    ```cpp
-    double EvaluateKeystrokeSavingsAscii(
-      ISqlCompletionEngine& engine, TStringBuf text) {
-      const size_t keysNormal = text.size();
-      size_t keysWithPrediction = 0;
-      for (size_t i = 0; i < text.size()) {
-        auto [token, candidates] = engine.Complete({
-          .Text = text,
-          .CursorPosition = i,
-        });
-        if (candidates.size() == 1) {
-          auto candidate = candidates[0];
-          auto skip = candidate.Content.size()
-                    - token.Content.size();
-          TCaseInsensitiveAsciiStringBuf expected = ...;
-          if (expected == TCIAStringBuf(candidate.Content)) {
-            i += skip;
-          }
+  ```cpp
+  double EvaluateKeystrokeSavingsAscii(
+    ISqlCompletionEngine& engine, TStringBuf text) {
+    const size_t keysNormal = text.size();
+    size_t keysWithPrediction = 0;
+    for (size_t i = 0; i < text.size()) {
+      auto [token, candidates] = engine.Complete({
+        .Text = text,
+        .CursorPosition = i,
+      });
+      if (candidates.size() == 1) {
+        auto candidate = candidates[0];
+        auto skip = candidate.Content.size()
+                  - token.Content.size();
+        TCaseInsensitiveAsciiStringBuf expected = ...;
+        if (expected == TCIAStringBuf(candidate.Content)) {
+          i += skip;
         }
-        i += 1;
-        keysWithPrediction += 1;
       }
-      return static_cast<double>(
-        keysNormal - keysWithPrediction) / keysNormal;
+      i += 1;
+      keysWithPrediction += 1;
     }
-    ```
-  ],
+    return static_cast<double>(
+      keysNormal - keysWithPrediction) / keysNormal;
+  }
+  ```,
   caption: "Симуляция работы пользователя",
 ) <experiment-simulation>
 
