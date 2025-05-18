@@ -8,12 +8,11 @@ aho-ullman-compilers:
     - "Ullman, J. D."
   edition: "2nd ed."
   publisher: "Addison-Wesley"
-  location: "Moscow"
   date: 2008
   page-total: 1184
-  electronic:
-    url: "https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811"
-    access-date: "2025-05-03"
+  url:
+    value: "https://www.amazon.com/Compilers-Principles-Techniques-Tools-2nd/dp/0321486811"
+    date: "2025-05-03"
 
 parr-antlr4:
   type: Book
@@ -24,9 +23,9 @@ parr-antlr4:
   publisher: "The Pragmatic Bookshelf"
   date: 2013
   page-total: 326
-  electronic:
-    url: "https://pragprog.com/titles/tpantlr2/the-definitive-antlr-4-reference/"
-    access-date: "2025-05-03"
+  url:
+    value: "https://pragprog.com/titles/tpantlr2/the-definitive-antlr-4-reference"
+    date: "2025-05-03"
 
 parr-allstar:
   type: Report
@@ -38,9 +37,9 @@ parr-allstar:
   journal: "ACM Sigplan Notices"
   publisher: "ACM"
   date: 2014
-  electronic:
-    url: "https://www.antlr.org/papers/allstar-techreport.pdf"
-    access-date: "2025-05-03"
+  url:
+    value: "https://www.antlr.org/papers/allstar-techreport.pdf"
+    date: "2025-05-03"
 
 parr-llstar:
   type: Report
@@ -51,9 +50,9 @@ parr-llstar:
   journal: "ACM Sigplan Notices"
   publisher: "ACM"
   date: 2011
-  electronic:
-    url: "https://tupl.cs.tufts.edu/papers/LL-star-PLDI11.pdf"
-    access-date: "2025-05-03"
+  url:
+    value: "https://tupl.cs.tufts.edu/papers/LL-star-PLDI11.pdf"
+    date: "2025-05-03"
 
 woods-atn:
   type: Report
@@ -61,9 +60,9 @@ woods-atn:
   author:
     - "W. A. Woods"
   date: 1970
-  electronic:
-    url: "https://dl.acm.org/doi/pdf/10.1145/355598.362773"
-    access-date: "2025-05-12"
+  url:
+    value: "https://dl.acm.org/doi/pdf/10.1145/355598.362773"
+    date: "2025-05-12"
 
 keystroke-savings:
   type: Report
@@ -72,36 +71,36 @@ keystroke-savings:
     - "Keith Trnka"
     - "Kathleen F. McCoy"
   date: 2006
-  electronic:
-    url: "https://aclanthology.org/P08-2066.pdf"
-    access-date: "2025-05-12"
+  url:
+    value: "https://aclanthology.org/P08-2066.pdf"
+    date: "2025-05-12"
 
 ydb-reference:
   type: Reference
   title: "YDB Reference"
   publisher: "YDB"
   date: 2025
-  electronic:
-    url: "https://ydb.tech/docs/en"
-    access-date: "2025-05-03"
+  url:
+    value: "https://ydb.tech/docs/en"
+    date: "2025-05-03"
 
 ytsaurus-reference:
   type: Reference
   title: "YTsaurus Reference"
   publisher: "YTsaurus"
   date: 2025
-  electronic:
-    url: "https://ytsaurus.tech/docs/en"
-    access-date: "2025-05-03"
+  url:
+    value: "https://ytsaurus.tech/docs/en"
+    date: "2025-05-03"
 
 lsp-specification:
   type: Reference
   title: "Language Server Protocol Specification"
   publisher: "Microsoft"
   date: 2022
-  electronic:
-    url: "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/"
-    access-date: "2025-05-13"
+  url:
+    value: "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification"
+    date: "2025-05-13"
 
 mike-antlr4-c3:
   type: Post
@@ -109,9 +108,9 @@ mike-antlr4-c3:
   author: 
     - "Mike Lischke"
   date: 2015
-  electronic:
-    url: "https://soft-gems.net/universal-code-completion-using-antlr3"
-    access-date: "2025-05-03"
+  url:
+    value: "https://soft-gems.net/universal-code-completion-using-antlr3"
+    date: "2025-05-03"
 
 fernando-antlr4-c3:
   type: Post
@@ -119,9 +118,9 @@ fernando-antlr4-c3:
   author:
     - "Fernando Dobladez"
   date: 2021
-  electronic:
-    url: "https://neuroning.com/post/implementing-code-completion-for-vscode-with-antlr/"
-    access-date: "2025-05-13"
+  url:
+    value: "https://neuroning.com/post/implementing-code-completion-for-vscode-with-antlr"
+    date: "2025-05-13"
 
 tomassetti-antlr4-c3:
   type: Post
@@ -129,9 +128,9 @@ tomassetti-antlr4-c3:
   author: 
    - "Alessio Stalla"
   date: 2020
-  electronic:
-    url: "https://tomassetti.me/code-completion-with-antlr4-c3/"
-    access-date: "2025-05-13"
+  url:
+    value: "https://tomassetti.me/code-completion-with-antlr4-c3"
+    date: "2025-05-13"
 
 yandex-yql:
   type: Post
@@ -139,6 +138,6 @@ yandex-yql:
   author:
     - "Иван Блинков"
   date: 2016
-  electronic:
-    url: "https://habr.com/ru/companies/yandex/articles/312430/"
-    access-date: "2025-05-12"
+  url:
+    value: "https://habr.com/ru/companies/yandex/articles/312430"
+    date: "2025-05-12"
