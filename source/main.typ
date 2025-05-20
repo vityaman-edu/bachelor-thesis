@@ -1102,7 +1102,7 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
   "bibliography.yml",
   title: none,
   full: true,
-  style: "./gost-r-7-0-5-2008.csl",
+  style: "./gost-r-7-0-100-2018-numeric-alphabetical.csl",
 )
 
 #structural-element("Приложение А")
