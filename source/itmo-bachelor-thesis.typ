@@ -136,7 +136,7 @@
     first-line-indent: (
       amount: 0em,
     ),
-  )[#name --- #definition]
+  )[*#name* --- #definition]
 }
 
 #let chapter(n, name) = {

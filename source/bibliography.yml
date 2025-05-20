@@ -90,6 +90,17 @@ keystroke-savings:
     value: "https://aclanthology.org/P08-2066.pdf"
     date: "2025-05-12"
 
+github-tree-sitter:
+  type: Report
+  title: "Static Analysis at GitHub: An experience report"
+  author:
+    - "Timothy Clem"
+    - "Patrick Thomson"
+  date: 2021
+  url: 
+    value: "https://dl.acm.org/doi/pdf/10.1145/3487019.3487022"
+    date: "2025-05-20"
+
 ydb-reference:
   type: Reference
   title: "YDB Reference"
