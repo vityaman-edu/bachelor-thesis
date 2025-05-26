@@ -1,3 +1,34 @@
+set -ex
+
+WORKDIR="$HOME/Downloads"
+
+rm -f "$WORKDIR/main.pdf"
+rm -f "$WORKDIR/main4.pdf"
+rm -f "$WORKDIR/output.pdf"
+
 typst compile source/main.typ
-pdftk source/main.pdf cat 4-end output source/main4.pdf
-pdftk ~/Downloads/title.pdf ~/Downloads/annotation.pdf source/main4.pdf cat output ~/Downloads/output.pdf
+
+gs \
+  -sDEVICE=pdfwrite \
+  -dNOPAUSE \
+  -dBATCH \
+  -dSAFER \
+  -sOutputFile="$WORKDIR/main.pdf" \
+  source/main.pdf
+
+gs \
+  -sDEVICE=pdfwrite \
+  -dNOPAUSE \
+  -dBATCH \
+  -dFirstPage=6 \
+  -dLastPage=9999 \
+  -sOutputFile="$WORKDIR/main4.pdf" \
+  "$WORKDIR/main.pdf"
+
+pdfunite \
+  "$WORKDIR/title.pdf" \
+  "$WORKDIR/task.pdf" \
+  "$WORKDIR/annotation.pdf" \
+  "$WORKDIR/main4.pdf" \
+  "$WORKDIR/output.pdf"
+

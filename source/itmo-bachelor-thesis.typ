@@ -113,8 +113,6 @@
     numbering: "1",
   )
 
-  counter(page).update(2)
-
   set heading(numbering: "1.1")
 
   doc
