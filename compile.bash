@@ -25,10 +25,13 @@ gs \
   -sOutputFile="$WORKDIR/main4.pdf" \
   "$WORKDIR/main.pdf"
 
-pdfunite \
+gs \
+  -dBATCH \
+  -dNOPAUSE \
+  -sDEVICE=pdfwrite \
+  -sOutputFile="$WORKDIR/output.pdf" \
   "$WORKDIR/title.pdf" \
   "$WORKDIR/task.pdf" \
   "$WORKDIR/annotation.pdf" \
-  "$WORKDIR/main4.pdf" \
-  "$WORKDIR/output.pdf"
+  "$WORKDIR/main4.pdf"
 
