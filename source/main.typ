@@ -1108,8 +1108,6 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
 
 Работа показывает, как при помощи современных средств разработки языков можно упростить реализацию не только трансляции, за счет генерации лексических и синтаксических анализаторов, но и другие связанные с языком функции, например, автодополнение и подсветку синтаксиса.
 
-Ссылки на исходный код доступны в приложении А.
-
 #structural-element("Cписок использованных источников")
 
 #bibliography(
@@ -1118,9 +1116,3 @@ $ "KS" = ("Keys"_"normal" - "Keys"_"with prediction") / "Keys"_"normal" $ <ks>
   full: true,
   style: "./gost-r-7-0-100-2018-numeric-alphabetical.csl",
 )
-
-#structural-element("Приложение А")
-
-https://github.com/vityaman/ytsaurus/tree/bachelor-thesis/yql/essentials/sql/v1/complete
-
-https://github.com/vityaman/ydb/tree/bachelor-thesis/ydb/public/lib/ydb_cli/commands/interactive/complete
